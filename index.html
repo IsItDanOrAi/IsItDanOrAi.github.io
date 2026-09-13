@@ -1016,45 +1016,6 @@
   }
   externalise(document);
 
-  // ---------- DEMO_FILL ----------
-  // Fills every empty placeholder in the panels with a sample photo so the page can
-  // be judged with pictures in it. Delete this whole block once real work goes in.
-  (function DEMO_FILL() {
-    var n = 0;
-    function fill(el, w, h) {
-      n++;
-      var img = document.createElement("img");
-      img.src = SAMPLE("onset-" + n, w, h);
-      img.alt = "";
-      img.loading = "lazy";
-      img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover";
-      el.style.position = "relative";
-      el.appendChild(img);
-    }
-    document.querySelectorAll(".sheet .cell .ph").forEach(function (ph) {
-      var cell = ph.parentElement;
-      var r = cell.className.match(/r-(\d+)/);
-      var map = { "16":[640,360], "4":[640,480], "1":[640,640], "9":[540,960], "2":[1200,500] };
-      var d = map[r ? r[1] : "16"] || [640,360];
-      ph.style.display = "none";
-      fill(cell, d[0], d[1]);
-      cell.querySelectorAll(".cap").forEach(function (c) { c.style.zIndex = 2; });
-    });
-    document.querySelectorAll(".thumb .ph").forEach(function (ph) {
-      ph.style.display = "none";
-      fill(ph.parentElement, 480, 270);
-      ph.parentElement.querySelectorAll(".cap").forEach(function (c) { c.style.zIndex = 2; });
-    });
-    document.querySelectorAll(".card .plate").forEach(function (p) {
-      p.style.color = "transparent";
-      fill(p, 640, 360);
-    });
-    document.querySelectorAll(".screen").forEach(function (sc) {
-      sc.style.color = "transparent";
-      fill(sc, 1280, 720);
-    });
-  })();
-
   // ---------- start ----------
   function start() {
     var h = location.hash.replace("#", "");
