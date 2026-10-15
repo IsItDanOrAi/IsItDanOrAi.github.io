@@ -24,11 +24,21 @@
                      the slot shape: r-16 wide, r-4 classic, r-1 square,
                      r-9 portrait, r-2 panoramic across two columns.
 
-  assets/video/      reel.mp4          the featured player in Reel
-                     reel-poster.jpg   its still frame
+  assets/video/      reel01.mp4 ... reel06.mp4     one video per Reel thumbnail.
+                                   Thumbnail 01 plays reel01.mp4, 02 plays
+                                   reel02.mp4, and so on. reel01 is the one
+                                   loaded in the big player when the page opens.
+                     thumb01.jpg ... thumb06.jpg   the reel thumbnails, 16:9.
+                                   Each thumb also doubles as its video's
+                                   still frame in the big player.
                      onset.mp4         the On-Set Studio screen recording
                      onset-poster.jpg  its still frame
-                     thumb01.jpg ... thumb06.jpg   the reel thumbnails, 16:9
+
+                     The title, one-line note and tools shown under the big
+                     player come from each thumbnail's data-title, data-note
+                     and data-tools in the Reel section. Edit those text
+                     values to change them. The shot name on the thumbnail
+                     itself is the text inside its cap span.
 
   assets/work/       flow01.jpg ... flow03.jpg     the Workflows cards, 16:9
                      node01.jpg                    the ExLoadout card, 16:9
@@ -463,17 +473,35 @@
       </div>
       <!-- ASSET: swap the div for a YouTube embed or a local MP4 with a poster -->
       <div class="screen" id="screen-reel">
-        <video src="assets/video/reel.mp4" poster="assets/video/reel-poster.jpg"
+        <video id="reel-player" src="assets/video/reel01.mp4" poster="assets/video/thumb01.jpg"
                controls playsinline preload="metadata"></video>
       </div>
-      <div class="screen-cap"><span><b>REPLACE: shot title</b> &middot; one line on what you did</span><span>Kling &middot; ComfyUI &middot; Premiere</span></div>
+      <div class="screen-cap" id="reel-cap"><span><b id="reel-title">REPLACE: shot title 01</b> &middot; <span id="reel-note">one line on what you did</span></span><span id="reel-tools">Kling &middot; ComfyUI &middot; Premiere</span></div>
       <div class="thumbs" id="thumbs-reel">
-        <button class="thumb" data-t="shot" aria-current="true"><img src="assets/video/thumb01.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="shot"><img src="assets/video/thumb02.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="seq"><img src="assets/video/thumb03.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="seq"><img src="assets/video/thumb04.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="test"><img src="assets/video/thumb05.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="shot"><img src="assets/video/thumb06.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
+        <button class="thumb" data-t="shot" aria-current="true"
+                data-video="assets/video/reel01.mp4"
+                data-title="REPLACE: shot title 01" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
+          <img src="assets/video/thumb01.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
+        <button class="thumb" data-t="shot"
+                data-video="assets/video/reel02.mp4"
+                data-title="REPLACE: shot title 02" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
+          <img src="assets/video/thumb02.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
+        <button class="thumb" data-t="seq"
+                data-video="assets/video/reel03.mp4"
+                data-title="REPLACE: shot title 03" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
+          <img src="assets/video/thumb03.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
+        <button class="thumb" data-t="seq"
+                data-video="assets/video/reel04.mp4"
+                data-title="REPLACE: shot title 04" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
+          <img src="assets/video/thumb04.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
+        <button class="thumb" data-t="test"
+                data-video="assets/video/reel05.mp4"
+                data-title="REPLACE: shot title 05" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
+          <img src="assets/video/thumb05.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
+        <button class="thumb" data-t="shot"
+                data-video="assets/video/reel06.mp4"
+                data-title="REPLACE: shot title 06" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
+          <img src="assets/video/thumb06.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
       </div>
       <p style="margin:1.25rem 0 0;font-family:Archivo,sans-serif;font-size:0.88rem;color:var(--graphite)">
         Full playlist on <a href="REPLACE-WITH-YOUR-PLAYLIST-URL">YouTube</a>.
@@ -676,6 +704,9 @@
 
 <script>
 (function () {
+  var SITE_VERSION = "portfolio-v24 (reel thumbnails play their own videos)";
+  try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
+
   // ---------- the sections that live on the film ----------
   // Splicing a new page in later means adding one entry here. Nothing else changes.
   // Every image on this page is loaded by filename. Drop a file with the right name
@@ -889,13 +920,53 @@
     });
   });
 
+  // ---- each reel thumbnail plays its own video in the big player ----
+  // The thumb's data-video names the clip, its own image becomes the still frame,
+  // and data-title, data-note and data-tools fill the line under the player.
   var thumbs = document.getElementById("thumbs-reel");
-  if (thumbs) thumbs.addEventListener("click", function (e) {
-    var t = e.target.closest(".thumb"); if (!t) return;
+  var player = document.getElementById("reel-player");
+  var screenReel = document.getElementById("screen-reel");
+
+  function showReel(t, play) {
+    if (!t || !player) return;
     thumbs.querySelectorAll(".thumb").forEach(function (x) { x.removeAttribute("aria-current"); });
     t.setAttribute("aria-current", "true");
-    document.getElementById("screen-reel").textContent = "ASSET: " + t.querySelector(".cap").textContent;
-  });
+
+    // clear any "missing file" label left by a previous clip
+    var miss = screenReel.querySelector(".missing");
+    if (miss) miss.remove();
+    player.style.display = "";
+
+    // use whichever thumbnail format actually loaded (jpg, webp, png) as the still
+    var img = t.querySelector("img");
+    var poster = img && img.currentSrc && img.style.display !== "none" ? img.currentSrc : "";
+    player.pause();
+    if (poster) player.setAttribute("poster", poster); else player.removeAttribute("poster");
+    player.setAttribute("src", t.getAttribute("data-video") || "");
+    player.load();
+
+    document.getElementById("reel-title").textContent = t.getAttribute("data-title") || "";
+    document.getElementById("reel-note").textContent = t.getAttribute("data-note") || "";
+    document.getElementById("reel-tools").textContent = t.getAttribute("data-tools") || "";
+
+    if (play) {
+      var p = player.play();
+      if (p && p.catch) p.catch(function () {});   // file missing or blocked: stay on the still
+    }
+  }
+
+  if (thumbs) {
+    thumbs.addEventListener("click", function (e) {
+      showReel(e.target.closest(".thumb"), true);
+    });
+    // fill the caption from thumbnail 01 on load, without autoplaying
+    var first = thumbs.querySelector('.thumb[aria-current="true"]') || thumbs.querySelector(".thumb");
+    if (first) {
+      document.getElementById("reel-title").textContent = first.getAttribute("data-title") || "";
+      document.getElementById("reel-note").textContent = first.getAttribute("data-note") || "";
+      document.getElementById("reel-tools").textContent = first.getAttribute("data-tools") || "";
+    }
+  }
 
   var lb = document.getElementById("lb"), lbFrame = document.getElementById("lb-frame"), lbCap = document.getElementById("lb-cap");
   document.querySelectorAll(".sheet .cell").forEach(function (c) {
