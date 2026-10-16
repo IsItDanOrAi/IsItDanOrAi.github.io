@@ -19,10 +19,21 @@
   assets/plates/     reel01.jpg ... reel06.jpg     the preview beside the film
                      16:9. Suggested 960 x 540. Same order as above.
 
-  assets/images/     image01.jpg ... image10.jpg   the contact sheet in Images
-                     Mixed shapes are fine and expected. The cell's class sets
-                     the slot shape: r-16 wide, r-4 classic, r-1 square,
-                     r-9 portrait, r-2 panoramic across two columns.
+  assets/images/     the contact sheet in Images. ANY filename, ANY number of
+                     images. Mixed shapes are fine: every tile takes its image's
+                     real shape, and very wide images span two columns.
+
+                     WHICH images appear, and under which filter, is set by four
+                     plain text files in the same folder:
+                        stills.txt   storyboards.txt   keyart.txt   characters.txt
+                     One image per line. The extension is optional (image11 and
+                     image11.jpg both work). An optional caption goes after a |
+                         image11.jpg | Rain on the rooftop set
+                     Lines starting with # are notes and are ignored.
+                     An image listed in two files shows once, under both filters.
+                     An image in no file does not show at all.
+                     Order on the page follows the order in the files, stills
+                     first, then storyboards, key art, characters.
 
   assets/video/      reel01.mp4 ... reel06.mp4     one video per Reel thumbnail.
                                    Thumbnail 01 plays reel01.mp4, 02 plays
@@ -125,6 +136,18 @@
     box-shadow:inset 0 0 0 1px currentColor;
   }
   .sound[aria-pressed="true"] .glyph{background:currentColor}
+
+  /* ===== UNDER CONSTRUCTION strip. Delete this rule and the matching block at the
+     top of <body> when the site is finished. ===== */
+  .construction{
+    display:flex;align-items:center;justify-content:center;gap:0.75rem;flex-wrap:wrap;
+    padding:0.5rem var(--pad);text-align:center;
+    font-family:Archivo,sans-serif;font-size:0.78rem;letter-spacing:0.08em;
+    color:var(--stock-2);background:#1A1B1E;border-bottom:1px solid var(--seam);
+    background-image:repeating-linear-gradient(135deg,
+      rgba(232,200,90,.07) 0 12px, transparent 12px 24px);
+  }
+  .construction b{color:#E8C85A;font-weight:600;text-transform:uppercase;letter-spacing:0.18em}
 
   .slate .live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pencil);margin-right:0.45rem;vertical-align:1px}
 
@@ -427,6 +450,12 @@
 </head>
 <body>
 
+<!-- ===== UNDER CONSTRUCTION: delete from here ===== -->
+<div class="construction" role="note">
+  <b>Under construction</b><span>New work is being added. Some sections are still being filled in.</span>
+</div>
+<!-- ===== to here, and the .construction CSS rule, when the site is finished ===== -->
+
 <div class="wrap">
   <header class="masthead">
     <a class="name" href="#">Dan Oravasaari</a>
@@ -525,7 +554,7 @@
     <section class="panel" id="p-images" role="tabpanel" aria-labelledby="t-images">
       <div class="head">
         <div><h2>Images</h2><p>Stills, storyboards, key art, and the assets a scene cuts to.</p></div>
-        <div class="meta">REPLACE: 32 images</div>
+        <div class="meta" id="images-count">&nbsp;</div>
       </div>
       <div class="filters" data-filter-for="sheet-images">
         <button aria-pressed="true" data-f="all">All</button>
@@ -535,18 +564,8 @@
         <button aria-pressed="false" data-f="char">Characters</button>
       </div>
       <!-- ASSET: each cell takes an <img>. Pick the r-* class by the image's aspect ratio. -->
-      <div class="sheet" id="sheet-images">
-        <button class="cell r-16" data-t="still" data-cap="REPLACE: caption"><img src="assets/images/image01.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-9" data-t="char" data-cap="REPLACE: caption"><img src="assets/images/image02.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-4" data-t="board" data-cap="REPLACE: caption"><img src="assets/images/image03.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-1" data-t="key" data-cap="REPLACE: caption"><img src="assets/images/image04.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-16" data-t="still" data-cap="REPLACE: caption"><img src="assets/images/image05.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-2" data-t="still" data-cap="REPLACE: caption"><img src="assets/images/image06.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-4" data-t="board" data-cap="REPLACE: caption"><img src="assets/images/image07.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-9" data-t="char" data-cap="REPLACE: caption"><img src="assets/images/image08.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-1" data-t="key" data-cap="REPLACE: caption"><img src="assets/images/image09.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-        <button class="cell r-16" data-t="still" data-cap="REPLACE: caption"><img src="assets/images/image10.jpg" alt="" loading="lazy"><span class="cap">REPLACE: caption</span></button>
-      </div>
+      <!-- Built by the script from the four lists in assets/images/. No tiles live here. -->
+      <div class="sheet" id="sheet-images"></div>
     </section>
 
     <!-- ================= 03 WORKFLOWS ================= -->
@@ -717,7 +736,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v28 (images shown whole in the sheet and the viewer)";
+  var SITE_VERSION = "portfolio-v29 (image categories from text lists, construction strip)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -928,7 +947,8 @@
       bar.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
       var f = b.getAttribute("data-f");
       target.querySelectorAll("[data-t]").forEach(function (item) {
-        item.hidden = !(f === "all" || item.getAttribute("data-t") === f);
+        var tags = (item.getAttribute("data-t") || "").split(" ");
+        item.hidden = !(f === "all" || tags.indexOf(f) > -1);
       });
     });
   });
@@ -996,17 +1016,82 @@
   function fitTile(c) {
     var img = c.querySelector("img");
     if (!img || !img.naturalWidth || img.style.display === "none" || c.hidden) return;
+    // very wide images (panoramas, scope frames) take two columns when there is room
+    var cols = getComputedStyle(sheet).gridTemplateColumns.split(" ").length;
+    c.style.gridColumn = (img.naturalWidth / img.naturalHeight >= 2.2 && cols > 1) ? "span 2" : "";
     var cs = getComputedStyle(sheet);
     var row = parseFloat(cs.gridAutoRows) || 10, gap = parseFloat(cs.rowGap) || 0;
     var h = c.getBoundingClientRect().width * img.naturalHeight / img.naturalWidth;
     c.style.gridRowEnd = "span " + Math.max(1, Math.round((h + gap) / (row + gap)));
   }
   function fitSheet() { if (sheet) sheet.querySelectorAll(".cell").forEach(fitTile); }
-  if (sheet) {
-    sheet.querySelectorAll(".cell img").forEach(function (img) {
-      img.addEventListener("load", function () { fitTile(img.closest(".cell")); });
-      if (img.complete) fitTile(img.closest(".cell"));
+
+  // ---- the category lists ----
+  // Each filter button reads one text file. To add a category later: add a button
+  // with a new data-f in the Images filters, and add one line here.
+  var CATEGORIES = [
+    { f: "still", file: "assets/images/stills.txt" },
+    { f: "board", file: "assets/images/storyboards.txt" },
+    { f: "key",   file: "assets/images/keyart.txt" },
+    { f: "char",  file: "assets/images/characters.txt" }
+  ];
+
+  function readList(url) {
+    if (!window.fetch) return Promise.resolve("");
+    return fetch(url, { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.text() : ""; })
+      .catch(function () { return ""; });
+  }
+
+  function buildSheet(texts) {
+    var order = [], byName = {};
+    texts.forEach(function (text, i) {
+      text.split(/\r?\n/).forEach(function (line) {
+        line = line.trim();
+        if (!line || line.charAt(0) === "#") return;
+        var bar = line.indexOf("|");
+        var name = (bar > -1 ? line.slice(0, bar) : line).trim();
+        var cap = bar > -1 ? line.slice(bar + 1).trim() : "";
+        if (!name) return;
+        if (!/\.[a-z0-9]+$/i.test(name)) name += ".jpg";      // extension optional
+        var key = name.replace(/\.[^.]+$/, "").toLowerCase();
+        if (!byName[key]) { byName[key] = { name: name, tags: [], cap: "" }; order.push(key); }
+        var item = byName[key];
+        if (item.tags.indexOf(CATEGORIES[i].f) === -1) item.tags.push(CATEGORIES[i].f);
+        if (cap && !item.cap) item.cap = cap;
+      });
     });
+
+    sheet.textContent = "";
+    order.forEach(function (key) {
+      var item = byName[key];
+      var b = document.createElement("button");
+      b.className = "cell r-16";
+      b.setAttribute("data-t", item.tags.join(" "));
+      b.setAttribute("data-cap", item.cap);
+      var img = document.createElement("img");
+      img.alt = item.cap; img.loading = "lazy";
+      img.addEventListener("load", function () { fitTile(b); });
+      img.src = "assets/images/" + item.name;
+      b.appendChild(img);
+      if (item.cap) {
+        var c = document.createElement("span");
+        c.className = "cap"; c.textContent = item.cap;
+        b.appendChild(c);
+      }
+      sheet.appendChild(b);
+    });
+
+    var count = document.getElementById("images-count");
+    if (count) count.textContent = order.length + (order.length === 1 ? " image" : " images");
+
+    // re-apply whichever filter is pressed
+    var pressed = document.querySelector('[data-filter-for="sheet-images"] [aria-pressed="true"]');
+    if (pressed && pressed.getAttribute("data-f") !== "all") pressed.click();
+  }
+
+  if (sheet) {
+    Promise.all(CATEGORIES.map(function (c) { return readList(c.file); })).then(buildSheet);
     window.addEventListener("resize", fitSheet);
     // tiles in a hidden panel or a filtered-out set have no width yet; refit when shown
     document.addEventListener("click", function () { requestAnimationFrame(fitSheet); }, true);
@@ -1014,13 +1099,16 @@
   }
 
   var lb = document.getElementById("lb"), lbFrame = document.getElementById("lb-frame"), lbCap = document.getElementById("lb-cap");
-  document.querySelectorAll(".sheet .cell").forEach(function (c) {
-    c.addEventListener("click", function () {
-      var img = c.querySelector("img");
-      lbFrame.innerHTML = img ? '<img src="' + img.src + '" alt="">' : c.querySelector(".ph").textContent;
-      lbCap.textContent = c.getAttribute("data-cap") || "";
-      lb.showModal();
-    });
+  if (sheet) sheet.addEventListener("click", function (e) {
+    var c = e.target.closest(".cell"); if (!c) return;
+    var img = c.querySelector("img");
+    if (!img || img.style.display === "none") return;     // nothing to show yet
+    lbFrame.innerHTML = "";
+    var big = document.createElement("img");
+    big.src = img.currentSrc || img.src; big.alt = "";
+    lbFrame.appendChild(big);
+    lbCap.textContent = c.getAttribute("data-cap") || "";
+    lb.showModal();
   });
   document.getElementById("lb-close").addEventListener("click", function () { lb.close(); });
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
