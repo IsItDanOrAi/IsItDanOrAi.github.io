@@ -1,0 +1,7 @@
+# Characters
+# One image per line. Extension optional. Optional caption after a |
+#   image11.jpg | Rain on the rooftop set
+# Lines starting with # are ignored.
+
+image02.jpg
+image08.jpg
