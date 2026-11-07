@@ -71,13 +71,6 @@ year:
 
 == Trailers ==
 
-[reel03]
-title: To the Victors Trailer
-about: A trailer for a short film concept about two brothers fighting for their father's throne. The project was cancelled.
-role:
-tools: LTX-2.3
-year: 2026
-
 [reel01]
 title: Missed Call
 about: A horror test short, made to push character consistency and camera motion across shots.
