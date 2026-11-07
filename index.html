@@ -36,6 +36,10 @@
                      extension (loop01.mp4, loop01.gif). Caption after a |
                          image11.png | Your caption here
                      Lines starting with # are notes and are ignored.
+                     STORYBOARDS also has its own view: boards.txt lists the
+                     sequences, and the panels live in assets/images/boards/.
+                     Picking Storyboards shows those sequences in place of the
+                     grid. Instructions are at the top of boards.txt.
                      A file listed in two lists shows once, under both filters.
                      A file in no list does not show at all.
                      A category with an empty list has its filter button hidden.
@@ -352,6 +356,7 @@
   }
   .frame .missing{font-size:0.62rem}
 
+  .sheet[hidden]{display:none}
   .sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));grid-auto-rows:10px;gap:3px}
   .cell-img,.sheet .cell{position:relative;background:#1b1e23;overflow:hidden;cursor:zoom-in;border:0;padding:0;text-align:left;color:inherit}
   .sheet .cell{border:0}
@@ -392,6 +397,25 @@
   .sheet .cell.is-video::before{content:"";position:absolute;top:0.55rem;right:0.6rem;z-index:2;
     border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent rgba(236,234,229,.85)}
   .filters button[hidden]{display:none}
+
+  /* ============ STORYBOARDS ============
+     Each sequence sits on a strip of board paper, panels in shot order with the
+     shot number and the direction under each, the way the sheet was handed to crew. */
+  .boards[hidden]{display:none}
+  .boards-intro{margin:0 0 1.6rem;max-width:66ch;color:var(--stock-2);line-height:1.65}
+  .seq{margin:0 0 1.9rem}
+  .seq-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin:0 0 0.55rem}
+  .seq-head h3{margin:0;font-family:"Source Serif 4",Georgia,serif;font-weight:400;font-size:1.25rem;color:var(--stock)}
+  .seq-head span{font-family:Archivo,sans-serif;font-size:0.8rem;color:var(--graphite);font-variant-numeric:tabular-nums}
+  .seq-row{overflow-x:auto;background:#E6E2D8;scrollbar-width:thin;scrollbar-color:#b9b3a5 transparent}
+  .seq-panels{list-style:none;margin:0;padding:14px;display:flex;gap:14px;width:max-content;min-width:100%}
+  .board{display:block;width:132px;border:0;padding:0;background:none;cursor:pointer;text-align:left;color:#1C1C1E}
+  .board .pic{display:block;width:132px;aspect-ratio:188/396;background:#cfcabd;overflow:hidden}
+  .board img{display:block;width:100%;height:100%;object-fit:cover}
+  .board .code{display:block;margin-top:7px;font-family:Archivo,sans-serif;font-weight:700;font-size:0.74rem;font-variant-numeric:tabular-nums}
+  .board .dir{display:block;margin-top:2px;font-family:Archivo,sans-serif;font-size:0.74rem;line-height:1.38;color:#3A3936}
+  .board:hover .pic,.board:focus-visible .pic{outline:2px solid #1C1C1E;outline-offset:2px}
+  .board:focus-visible{outline:none}
 
   /* ============ THE REEL PLAYER ============
      Reels are strips of camera tape, the way a camera assistant labels a can.
@@ -553,6 +577,15 @@
   dialog.lb .lb-frame img,dialog.lb .lb-frame video{display:block;max-height:86vh;max-width:94vw;width:auto;height:auto;object-fit:contain}
   dialog.lb figcaption{padding:0.7rem 0.2rem;font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--stock-2);
     display:flex;justify-content:space-between;gap:1rem}
+  dialog.lb .lb-nav{display:flex;gap:0.4rem;flex-wrap:wrap}
+  /* a board panel is tall and narrow: keep the viewer to the panel's width plus room to read */
+  dialog.lb.board-mode figure{width:min(94vw,640px)}
+  dialog.lb.board-mode .lb-frame{min-width:0}
+  dialog.lb.board-mode figcaption{flex-direction:column;align-items:flex-start;gap:0.7rem}
+  dialog.lb .lb-nav button[hidden]{display:none}
+  /* board panels are small originals, so the viewer shows them at twice size at most */
+  dialog.lb .lb-frame img.board-big{height:min(80vh,792px);width:auto;max-width:94vw}
+  dialog.lb .lb-code{font-weight:600;color:var(--stock);margin-right:0.6rem}
   dialog.lb button{background:transparent;border:1px solid var(--seam);color:var(--stock);padding:0.3rem 0.7rem;cursor:pointer;font-size:0.85rem}
 
   footer{border-top:1px solid var(--seam);padding:1.5rem 0 2.5rem;color:var(--graphite);
@@ -693,6 +726,11 @@
       </div>
       <!-- Built by the script from the category lists in assets/images/. No tiles live here. -->
       <div class="sheet" id="sheet-images"></div>
+      <!-- Storyboards view: built from assets/images/boards.txt, shown in place of the
+           grid when Storyboards is picked. Panels live in assets/images/boards/ -->
+      <div class="boards" id="boards" hidden>
+        <p class="boards-intro" id="boards-intro"></p>
+      </div>
     </section>
 
     <!-- ================= 03 WORKFLOWS ================= -->
@@ -862,13 +900,13 @@
 <dialog class="lb" id="lb">
   <figure>
     <div class="lb-frame" id="lb-frame">image</div>
-    <figcaption><span id="lb-cap"></span><button id="lb-close">Close</button></figcaption>
+    <figcaption><span id="lb-cap"></span><span class="lb-nav"><button id="lb-prev" hidden>Previous shot</button><button id="lb-next" hidden>Next shot</button><button id="lb-close">Close</button></span></figcaption>
   </figure>
 </dialog>
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v33 (one section header, contact terms)";
+  var SITE_VERSION = "portfolio-v34 (storyboard sequences)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -1517,6 +1555,95 @@
   }
 
   var lb = document.getElementById("lb"), lbFrame = document.getElementById("lb-frame"), lbCap = document.getElementById("lb-cap");
+  var lbPrev = document.getElementById("lb-prev"), lbNext = document.getElementById("lb-next");
+
+  // ---- storyboards: sequences built from assets/images/boards.txt ----
+  //   == Scene 26: The drive ==         starts a sequence
+  //   s26-01.jpg | 26.1 | direction     one panel (files in assets/images/boards/)
+  //   intro: ...                        the sentence above all the sequences
+  var boardsBox = document.getElementById("boards");
+  var BOARDS = [], boardAt = null;          // boardAt = [sequence, panel] open in the viewer
+
+  function buildBoards(text) {
+    var seq = null;
+    text.split(/\r?\n/).forEach(function (line) {
+      var t = line.trim();
+      if (!t || t.charAt(0) === "#") return;
+      var head = t.match(/^=+\s*(.*?)\s*=+$/);
+      if (head) { seq = { name: head[1], panels: [] }; BOARDS.push(seq); return; }
+      if (/^intro:/i.test(t)) { document.getElementById("boards-intro").textContent = t.slice(6).trim(); return; }
+      if (!seq) return;
+      var p = t.split("|").map(function (x) { return x.trim(); });
+      if (!p[0]) return;
+      seq.panels.push({ file: p[0], code: p[1] || "", dir: p.slice(2).join(" | ") });
+    });
+    BOARDS = BOARDS.filter(function (q) { return q.panels.length; });
+    BOARDS.forEach(function (q, qi) {
+      var sec = document.createElement("section"); sec.className = "seq";
+      var hd = document.createElement("div"); hd.className = "seq-head";
+      var h = document.createElement("h3"); h.textContent = q.name;
+      var c = document.createElement("span"); c.textContent = q.panels.length + (q.panels.length === 1 ? " shot" : " shots");
+      hd.appendChild(h); hd.appendChild(c);
+      var row = document.createElement("div"); row.className = "seq-row";
+      var ol = document.createElement("ol"); ol.className = "seq-panels";
+      q.panels.forEach(function (pn, pi) {
+        var li = document.createElement("li");
+        var b = document.createElement("button"); b.type = "button"; b.className = "board";
+        b.setAttribute("aria-label", "Shot " + pn.code + ": " + pn.dir);
+        var pic = document.createElement("span"); pic.className = "pic";
+        var img = document.createElement("img"); img.alt = ""; img.loading = "lazy";
+        img.src = "assets/images/boards/" + pn.file;
+        pic.appendChild(img);
+        var code = document.createElement("span"); code.className = "code"; code.textContent = pn.code;
+        var dir = document.createElement("span"); dir.className = "dir"; dir.textContent = pn.dir;
+        b.appendChild(pic); b.appendChild(code); b.appendChild(dir);
+        b.addEventListener("click", function () { openBoard(qi, pi); });
+        li.appendChild(b); ol.appendChild(li);
+      });
+      row.appendChild(ol); sec.appendChild(hd); sec.appendChild(row);
+      boardsBox.appendChild(sec);
+    });
+    // the Storyboards button shows as long as there are sequences, even with no tiles
+    if (BOARDS.length) {
+      var bb = document.querySelector('[data-filter-for="sheet-images"] [data-f="board"]');
+      if (bb) bb.hidden = false;
+    }
+  }
+
+  function openBoard(qi, pi) {
+    var q = BOARDS[qi]; if (!q || !q.panels[pi]) return;
+    boardAt = [qi, pi];
+    var pn = q.panels[pi];
+    lbFrame.innerHTML = "";
+    var big = document.createElement("img");
+    big.className = "board-big"; big.alt = "";
+    big.src = "assets/images/boards/" + pn.file;
+    lbFrame.appendChild(big);
+    lbCap.textContent = "";
+    var code = document.createElement("span"); code.className = "lb-code"; code.textContent = pn.code;
+    lbCap.appendChild(code); lbCap.append(pn.dir);
+    lbPrev.hidden = false; lbNext.hidden = false;
+    lb.classList.add("board-mode");
+    lbPrev.disabled = pi === 0; lbNext.disabled = pi === q.panels.length - 1;
+    if (!lb.open) lb.showModal();
+  }
+  lbPrev.addEventListener("click", function () { if (boardAt) openBoard(boardAt[0], boardAt[1] - 1); });
+  lbNext.addEventListener("click", function () { if (boardAt) openBoard(boardAt[0], boardAt[1] + 1); });
+  lb.addEventListener("keydown", function (e) {
+    if (!boardAt) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); openBoard(boardAt[0], boardAt[1] + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); openBoard(boardAt[0], boardAt[1] - 1); }
+  });
+
+  // picking Storyboards swaps the grid for the sequences
+  var imgBar = document.querySelector('[data-filter-for="sheet-images"]');
+  if (imgBar && boardsBox) imgBar.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var boardView = b.getAttribute("data-f") === "board" && BOARDS.length > 0;
+    boardsBox.hidden = !boardView;
+    sheet.hidden = boardView;
+  });
+  if (boardsBox) readList("assets/images/boards.txt").then(buildBoards);
   if (sheet) sheet.addEventListener("click", function (e) {
     var c = e.target.closest(".cell"); if (!c) return;
     var m = c.querySelector("img, video");
@@ -1534,10 +1661,12 @@
     }
     lbFrame.appendChild(big);
     lbCap.textContent = c.getAttribute("data-cap") || "";
+    boardAt = null; lbPrev.hidden = true; lbNext.hidden = true;
+    lb.classList.remove("board-mode");
     lb.showModal();
   });
   document.getElementById("lb-close").addEventListener("click", function () { lb.close(); });
-  lb.addEventListener("close", function () { lbFrame.innerHTML = ""; });   // stops a playing loop
+  lb.addEventListener("close", function () { lbFrame.innerHTML = ""; boardAt = null; });   // stops a playing loop
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   var slot = document.getElementById("email-slot");
