@@ -1,7 +1,13 @@
-# Key art
-# One image per line. Extension optional. Optional caption after a |
-#   image11.jpg | Rain on the rooftop set
-# Lines starting with # are ignored.
+# KEY ART
+# Posters, one-sheets, title cards, episode thumbnails, campaign hero images.
+#
+# One file per line. Extension optional for pictures (.jpg is assumed and
+# .webp / .png are tried too). Write the extension for loops: name.mp4 or name.gif
+# Optional caption after a |
+#   imageNN.png | Your caption here   (example only, this line is ignored)
+# Lines starting with # are ignored. The same file can be listed in more than one
+# category and still shows once under All.
+# Add your images BELOW this line, one per line, with NO # in front.
 
-image04.jpg
-image09.jpg
+image05.png
+image09.png
