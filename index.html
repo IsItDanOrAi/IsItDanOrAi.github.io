@@ -37,7 +37,7 @@
                          image11.png | Your caption here
                      Lines starting with # are notes and are ignored.
                      STORYBOARDS also has its own view: boards.txt lists the
-                     sequences, and the panels live in assets/images/boards/.
+                     sequences, and the panels live in assets/images/ too.
                      Picking Storyboards shows those sequences in place of the
                      grid. Instructions are at the top of boards.txt.
                      A file listed in two lists shows once, under both filters.
@@ -85,7 +85,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Courier+Prime:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -410,10 +410,11 @@
   .seq-row{overflow-x:auto;background:#E6E2D8;scrollbar-width:thin;scrollbar-color:#b9b3a5 transparent}
   .seq-panels{list-style:none;margin:0;padding:14px;display:flex;gap:14px;width:max-content;min-width:100%}
   .board{display:block;width:132px;border:0;padding:0;background:none;cursor:pointer;text-align:left;color:#1C1C1E}
-  .board .pic{display:block;width:132px;aspect-ratio:188/396;background:#cfcabd;overflow:hidden}
+  .board .pic{position:relative;display:block;width:132px;aspect-ratio:188/396;background:#cfcabd;overflow:hidden}
   .board img{display:block;width:100%;height:100%;object-fit:cover}
-  .board .code{display:block;margin-top:7px;font-family:Archivo,sans-serif;font-weight:700;font-size:0.74rem;font-variant-numeric:tabular-nums}
-  .board .dir{display:block;margin-top:2px;font-family:Archivo,sans-serif;font-size:0.74rem;line-height:1.38;color:#3A3936}
+  /* the shot text was crew paperwork, so it is set the way a script is: in a screenplay typewriter face */
+  .board .code{display:block;margin-top:8px;font-family:"Courier Prime","Courier New",monospace;font-weight:700;font-size:0.76rem}
+  .board .dir{display:block;margin-top:2px;font-family:"Courier Prime","Courier New",monospace;font-size:0.76rem;line-height:1.36;color:#2F2E2B}
   .board:hover .pic,.board:focus-visible .pic{outline:2px solid #1C1C1E;outline-offset:2px}
   .board:focus-visible{outline:none}
 
@@ -572,7 +573,7 @@
   dialog.lb figure{margin:0}
   /* The viewer shows the whole image at the largest size that fits the window,
      whatever its shape. It has its own class so nothing from the film cells applies. */
-  dialog.lb .lb-frame{background:#0b0c0e;display:grid;place-items:center;color:#6b7078;
+  dialog.lb .lb-frame{position:relative;background:#0b0c0e;display:grid;place-items:center;color:#6b7078;
     font-family:Archivo,sans-serif;min-width:min(60vw,600px);min-height:200px}
   dialog.lb .lb-frame img,dialog.lb .lb-frame video{display:block;max-height:86vh;max-width:94vw;width:auto;height:auto;object-fit:contain}
   dialog.lb figcaption{padding:0.7rem 0.2rem;font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--stock-2);
@@ -580,8 +581,9 @@
   dialog.lb .lb-nav{display:flex;gap:0.4rem;flex-wrap:wrap}
   /* a board panel is tall and narrow: keep the viewer to the panel's width plus room to read */
   dialog.lb.board-mode figure{width:min(94vw,640px)}
-  dialog.lb.board-mode .lb-frame{min-width:0}
+  dialog.lb.board-mode .lb-frame{min-width:0;min-height:min(80vh,792px)}
   dialog.lb.board-mode figcaption{flex-direction:column;align-items:flex-start;gap:0.7rem}
+  dialog.lb.board-mode #lb-cap{font-family:"Courier Prime","Courier New",monospace;font-size:0.92rem;line-height:1.45}
   dialog.lb .lb-nav button[hidden]{display:none}
   /* board panels are small originals, so the viewer shows them at twice size at most */
   dialog.lb .lb-frame img.board-big{height:min(80vh,792px);width:auto;max-width:94vw}
@@ -727,7 +729,7 @@
       <!-- Built by the script from the category lists in assets/images/. No tiles live here. -->
       <div class="sheet" id="sheet-images"></div>
       <!-- Storyboards view: built from assets/images/boards.txt, shown in place of the
-           grid when Storyboards is picked. Panels live in assets/images/boards/ -->
+           grid when Storyboards is picked. Panels live in assets/images/ -->
       <div class="boards" id="boards" hidden>
         <p class="boards-intro" id="boards-intro"></p>
       </div>
@@ -906,7 +908,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v34 (storyboard sequences)";
+  var SITE_VERSION = "portfolio-v35 (boards read from assets/images, screenplay face)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -1559,7 +1561,7 @@
 
   // ---- storyboards: sequences built from assets/images/boards.txt ----
   //   == Scene 26: The drive ==         starts a sequence
-  //   s26-01.jpg | 26.1 | direction     one panel (files in assets/images/boards/)
+  //   s26-01.jpg | 26.1 | direction     one panel (files in assets/images/)
   //   intro: ...                        the sentence above all the sequences
   var boardsBox = document.getElementById("boards");
   var BOARDS = [], boardAt = null;          // boardAt = [sequence, panel] open in the viewer
@@ -1592,7 +1594,7 @@
         b.setAttribute("aria-label", "Shot " + pn.code + ": " + pn.dir);
         var pic = document.createElement("span"); pic.className = "pic";
         var img = document.createElement("img"); img.alt = ""; img.loading = "lazy";
-        img.src = "assets/images/boards/" + pn.file;
+        img.src = "assets/images/" + pn.file;
         pic.appendChild(img);
         var code = document.createElement("span"); code.className = "code"; code.textContent = pn.code;
         var dir = document.createElement("span"); dir.className = "dir"; dir.textContent = pn.dir;
@@ -1617,7 +1619,7 @@
     lbFrame.innerHTML = "";
     var big = document.createElement("img");
     big.className = "board-big"; big.alt = "";
-    big.src = "assets/images/boards/" + pn.file;
+    big.src = "assets/images/" + pn.file;
     lbFrame.appendChild(big);
     lbCap.textContent = "";
     var code = document.createElement("span"); code.className = "lb-code"; code.textContent = pn.code;
