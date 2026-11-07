@@ -1,0 +1,49 @@
+# REEL
+# One block per video. Each block starts with the video's file name in square
+# brackets, with no extension: [reel01] plays assets/video/reel01.mp4
+# The thumbnail with the same number is used automatically (reel01 uses thumb01).
+#
+#   tags:   one or more of   Narrative, VFX, Commercial, Animation, R&D
+#           separate several with commas. A filter button with no videos is hidden.
+#   title:  the bold title under the player
+#   note:   one line on what you did (leave it out and the line just shows the title)
+#   tools:  the tools, separated by commas. They show on the right of the caption.
+#   name:   short label on the thumbnail (optional, the title is used if left out)
+#   thumb:  a different thumbnail file (optional)
+#
+# Order here is the order on the page. The FIRST block is what loads in the player,
+# so put your strongest shot first. To add a video: upload reel07.mp4 and
+# thumb07.png to assets/video, then add a [reel07] block. There is no limit.
+# Lines starting with # are ignored. To hide a video, put # in front of its lines.
+
+[reel01]
+tags: Narrative
+title: Missed Calls
+note:
+tools:
+
+[reel02]
+tags: VFX
+title: Bakery Window
+note:
+tools:
+
+[reel04]
+tags: Narrative
+title: Window Profile
+note:
+tools:
+
+[reel05]
+tags: VFX
+title: Face Replacement
+note:
+tools:
+
+# reel03 and reel06 are waiting on their videos (thumb03 is uploaded already).
+# Remove the # from these lines once reel03.mp4 / reel06.mp4 are in assets/video.
+# [reel03]
+# tags: Narrative
+# title:
+# note:
+# tools:

@@ -23,40 +23,46 @@
                      images. Mixed shapes are fine: every tile takes its image's
                      real shape, and very wide images span two columns.
 
-                     WHICH images appear, and under which filter, is set by four
-                     plain text files in the same folder:
-                        stills.txt   storyboards.txt   keyart.txt   characters.txt
-                     One image per line. The extension is optional (image11 and
-                     image11.jpg both work). An optional caption goes after a |
-                         image11.jpg | Rain on the rooftop set
+                     WHICH images appear, and under which filter, is set by one
+                     plain text file per category, in the same folder:
+                        keyart.txt        Key Art
+                        stills.txt        Film Stills
+                        characters.txt    Characters
+                        environments.txt  Environments
+                        storyboards.txt   Storyboards
+                        onscreen.txt      On-Screen Assets
+                        product.txt       Product & Advertising
+                        animation.txt     Animation
+                     One file per line. Extension optional for pictures (image11
+                     and image11.png both work). Short loops work too: write the
+                     extension (loop01.mp4, loop01.gif). Caption after a |
+                         image11.png | Your caption here
                      Lines starting with # are notes and are ignored.
-                     An image listed in two files shows once, under both filters.
-                     An image in no file does not show at all.
-                     Order on the page follows the order in the files, stills
-                     first, then storyboards, key art, characters.
+                     A file listed in two lists shows once, under both filters.
+                     A file in no list does not show at all.
+                     A category with an empty list has its filter button hidden.
+                     Order on the page follows the list above, then the order
+                     inside each file.
 
-  assets/video/      reel01.mp4 ... reel06.mp4     one video per Reel thumbnail.
-                                   Thumbnail 01 plays reel01.mp4, 02 plays
-                                   reel02.mp4, and so on. reel01 is the one
-                                   loaded in the big player when the page opens.
-                     thumb01.jpg ... thumb06.jpg   the reel thumbnails, 16:9.
-                                   Each thumb also doubles as its video's
-                                   still frame in the big player.
+  assets/video/      reel.txt          THE REEL. One block per video, in the order
+                                       they appear. Title, note, tools and filter
+                                       tags for every video live here. Full
+                                       instructions are at the top of that file.
+                     reel01.mp4 ...    the videos, as many as you like
+                     thumb01.jpg ...   the reel thumbnails, 16:9. reel01 uses
+                                       thumb01 automatically. Each thumb also
+                                       doubles as its video's still frame.
                      onset.mp4         the On-Set Studio screen recording
                      onset-poster.jpg  its still frame
-
-                     The title, one-line note and tools shown under the big
-                     player come from each thumbnail's data-title, data-note
-                     and data-tools in the Reel section. Edit those text
-                     values to change them. The shot name on the thumbnail
-                     itself is the text inside its cap span.
 
   assets/work/       flow01.jpg ... flow03.jpg     the Workflows cards, 16:9
                      node01.jpg                    the ExLoadout card, 16:9
 
   root               Dan_Oravasaari_Resume.pdf     linked from Work and Contact
                      favicon.png
-                     assets/og.jpg                 1200 x 630 link preview
+                     assets/og.png                 1200 x 630 link preview, the picture
+                                                   LinkedIn, Slack and email show
+                                                   when someone pastes the link
   =======================================================================
 -->
 <html lang="en">
@@ -67,7 +73,11 @@
 <meta name="description" content="Generative AI artist. Storyboards, on-screen assets, and shots for film and TV. Creator of On-Set Studio, a virtual soundstage for ComfyUI.">
 <meta property="og:title" content="Dan Oravasaari - Generative AI Artist">
 <meta property="og:description" content="Storyboards, on-screen assets, and shots for film and TV.">
-<meta property="og:image" content="https://REPLACE-WITH-YOUR-DOMAIN/assets/og.jpg">
+<meta property="og:image" content="https://isitdanorai.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://isitdanorai.github.io/">
+<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.png">
 
@@ -371,6 +381,11 @@
   .thumb{position:relative;aspect-ratio:16/9;background:#1b1e23;border:0;padding:0;cursor:pointer;color:inherit;text-align:left}
   .thumb img,.card .plate img{width:100%;height:100%;object-fit:cover;display:block}
   .sheet .cell img{display:block}
+  .sheet .cell video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+  /* a small play mark tells a moving tile from a still one */
+  .sheet .cell.is-video::before{content:"";position:absolute;top:0.55rem;right:0.6rem;z-index:2;
+    border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent rgba(236,234,229,.85)}
+  .filters button[hidden]{display:none}
   .thumb{overflow:hidden}
   .thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:#6b7078;font-family:Archivo,sans-serif;font-size:0.72rem}
   .thumb .cap{position:absolute;left:0;right:0;bottom:0;padding:0.45rem 0.6rem;font-family:Archivo,sans-serif;font-size:0.75rem;
@@ -425,7 +440,7 @@
      whatever its shape. It has its own class so nothing from the film cells applies. */
   dialog.lb .lb-frame{background:#0b0c0e;display:grid;place-items:center;color:#6b7078;
     font-family:Archivo,sans-serif;min-width:min(60vw,600px);min-height:200px}
-  dialog.lb .lb-frame img{display:block;max-height:86vh;max-width:94vw;width:auto;height:auto;object-fit:contain}
+  dialog.lb .lb-frame img,dialog.lb .lb-frame video{display:block;max-height:86vh;max-width:94vw;width:auto;height:auto;object-fit:contain}
   dialog.lb figcaption{padding:0.7rem 0.2rem;font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--stock-2);
     display:flex;justify-content:space-between;gap:1rem}
   dialog.lb button{background:transparent;border:1px solid var(--seam);color:var(--stock);padding:0.3rem 0.7rem;cursor:pointer;font-size:0.85rem}
@@ -505,66 +520,50 @@
     <section class="panel" id="p-reel" role="tabpanel" aria-labelledby="t-reel" data-active>
       <div class="head">
         <div><h2>Reel</h2><p>Shots and sequences. Staged and lit before the model sees them.</p></div>
-        <div class="meta">REPLACE: 14 shots<br>2024 to 2026</div>
+        <div class="meta"><span id="reel-count">&nbsp;</span><br>2024 to 2026</div>
       </div>
       <div class="filters" data-filter-for="thumbs-reel">
+        <!-- The tags: lines in assets/video/reel.txt pick these. A button with no
+             videos behind it is hidden automatically. -->
         <button aria-pressed="true" data-f="all">All</button>
-        <button aria-pressed="false" data-f="shot">Shots</button>
-        <button aria-pressed="false" data-f="seq">Sequences</button>
-        <button aria-pressed="false" data-f="test">Tests</button>
+        <button aria-pressed="false" data-f="narrative">Narrative</button>
+        <button aria-pressed="false" data-f="vfx">VFX</button>
+        <button aria-pressed="false" data-f="commercial">Commercial</button>
+        <button aria-pressed="false" data-f="animation">Animation</button>
+        <button aria-pressed="false" data-f="rd">R&amp;D</button>
       </div>
-      <!-- ASSET: swap the div for a YouTube embed or a local MP4 with a poster -->
+      <!-- The player loads the first video listed in assets/video/reel.txt -->
       <div class="screen" id="screen-reel">
-        <video id="reel-player" src="assets/video/reel01.mp4" poster="assets/video/thumb01.jpg"
-               controls playsinline preload="metadata"></video>
+        <video id="reel-player" controls playsinline preload="metadata"></video>
       </div>
-      <div class="screen-cap" id="reel-cap"><span><b id="reel-title">REPLACE: shot title 01</b> &middot; <span id="reel-note">one line on what you did</span></span><span id="reel-tools">Kling &middot; ComfyUI &middot; Premiere</span></div>
-      <div class="thumbs" id="thumbs-reel">
-        <button class="thumb" data-t="shot" aria-current="true"
-                data-video="assets/video/reel01.mp4"
-                data-title="REPLACE: shot title 01" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
-          <img src="assets/video/thumb01.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="shot"
-                data-video="assets/video/reel02.mp4"
-                data-title="REPLACE: shot title 02" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
-          <img src="assets/video/thumb02.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="seq"
-                data-video="assets/video/reel03.mp4"
-                data-title="REPLACE: shot title 03" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
-          <img src="assets/video/thumb03.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="seq"
-                data-video="assets/video/reel04.mp4"
-                data-title="REPLACE: shot title 04" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
-          <img src="assets/video/thumb04.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="test"
-                data-video="assets/video/reel05.mp4"
-                data-title="REPLACE: shot title 05" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
-          <img src="assets/video/thumb05.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-        <button class="thumb" data-t="shot"
-                data-video="assets/video/reel06.mp4"
-                data-title="REPLACE: shot title 06" data-note="one line on what you did" data-tools="Kling &middot; ComfyUI &middot; Premiere">
-          <img src="assets/video/thumb06.jpg" alt="" loading="lazy"><span class="cap">REPLACE: shot name</span></button>
-      </div>
+      <div class="screen-cap" id="reel-cap"><span><b id="reel-title"></b><span id="reel-note-wrap"> &middot; <span id="reel-note"></span></span></span><span id="reel-tools"></span></div>
+      <!-- Built by the script from assets/video/reel.txt. No thumbnails live here. -->
+      <div class="thumbs" id="thumbs-reel"></div>
       <p style="margin:1.25rem 0 0;font-family:Archivo,sans-serif;font-size:0.88rem;color:var(--graphite)">
-        Full playlist on <a href="REPLACE-WITH-YOUR-PLAYLIST-URL">YouTube</a>.
+        Full playlist on <a href="https://www.youtube.com/playlist?list=PLfkn2Vz49m9syTGv1UATVTBihNnzCE9pE">YouTube</a>.
       </p>
     </section>
 
     <!-- ================= 02 IMAGES ================= -->
     <section class="panel" id="p-images" role="tabpanel" aria-labelledby="t-images">
       <div class="head">
-        <div><h2>Images</h2><p>Stills, storyboards, key art, and the assets a scene cuts to.</p></div>
+        <div><h2>Images</h2><p>Key art, characters, storyboards, product work, and the assets a scene cuts to.</p></div>
         <div class="meta" id="images-count">&nbsp;</div>
       </div>
       <div class="filters" data-filter-for="sheet-images">
+        <!-- One button per category list. A button whose list is empty is hidden
+             automatically, so a category can sit ready until it has work in it. -->
         <button aria-pressed="true" data-f="all">All</button>
-        <button aria-pressed="false" data-f="still">Stills</button>
-        <button aria-pressed="false" data-f="board">Storyboards</button>
-        <button aria-pressed="false" data-f="key">Key art</button>
+        <button aria-pressed="false" data-f="key">Key Art</button>
+        <button aria-pressed="false" data-f="still">Film Stills</button>
         <button aria-pressed="false" data-f="char">Characters</button>
+        <button aria-pressed="false" data-f="env">Environments</button>
+        <button aria-pressed="false" data-f="board">Storyboards</button>
+        <button aria-pressed="false" data-f="onscreen">On-Screen Assets</button>
+        <button aria-pressed="false" data-f="product">Product &amp; Advertising</button>
+        <button aria-pressed="false" data-f="anim">Animation</button>
       </div>
-      <!-- ASSET: each cell takes an <img>. Pick the r-* class by the image's aspect ratio. -->
-      <!-- Built by the script from the four lists in assets/images/. No tiles live here. -->
+      <!-- Built by the script from the category lists in assets/images/. No tiles live here. -->
       <div class="sheet" id="sheet-images"></div>
     </section>
 
@@ -572,7 +571,7 @@
     <section class="panel" id="p-workflows" role="tabpanel" aria-labelledby="t-workflows">
       <div class="head">
         <div><h2>Workflows</h2><p>ComfyUI pipelines built for clients and for my own work. Shown as graph and result.</p></div>
-        <div class="meta">REPLACE: 5 workflows</div>
+        <div class="meta" id="flow-count">&nbsp;</div>
       </div>
       <div class="cards">
         <article class="card">
@@ -594,9 +593,9 @@
         <article class="card">
           <div class="plate"><img src="assets/work/flow03.jpg" alt="" loading="lazy"></div>
           <div class="body">
-            <h3>REPLACE: workflow name</h3>
-            <p>REPLACE: what it takes in, what it returns, and the one decision that made it work.</p>
-            <div class="spec"><span>REPLACE tools</span><span><a href="#">Download JSON</a></span></div>
+            <h3>Bounding boxes to a posed character</h3>
+            <p>A bounding box usually tells the model only where a character stands. Here every limb gets its own box, down to the hands and feet, so the same data that places the character also poses it. OpenPose skeletons and 3D poser nodes plug into the same graph as alternative pose sources.</p>
+            <div class="spec"><span>BBOX &middot; OpenPose &middot; 3D pose nodes</span><span>2026</span></div>
           </div>
         </article>
       </div>
@@ -671,13 +670,13 @@
             <h3>Software Contractor</h3><div class="org">Copley, remote</div>
             <p>Designed an AI product photography pipeline, integrated it end to end, and taught the team to run it.</p>
           </div></div>
+          <div class="cue"><div class="when">Sep 2024 to Jan 2025</div><div>
+            <h3>Animator</h3><div class="org">TCL Research America</div>
+            <p>AI facial animation and lip-sync on a team production that aired on the TCL network and screened at the TCL Chinese Theatre in Los Angeles. Several shots are mine, and all of the multilingual dubbing and the final montage. Midjourney and Kling.</p>
+          </div></div>
           <div class="cue"><div class="when">Mar 2024</div><div>
             <h3>Director of Artificial Intelligence</h3><div class="org">Sucasas Cinema</div>
             <p>Took over a stalled VFX package one week from the deadline and delivered 20+ shots on time, roughly 90% of the film.</p>
-          </div></div>
-          <div class="cue"><div class="when">Sep 2024 to Jan 2025</div><div>
-            <h3>Animator</h3><div class="org">TCL Research America</div>
-            <p>AI facial animation and lip-sync for short films on TCL TV and YouTube. Midjourney and Kling.</p>
           </div></div>
         </div>
         <aside class="aside">
@@ -713,7 +712,7 @@
           <ul>
             <li><a href="https://github.com/IsItDanOrAi">GitHub</a></li>
             <li><a href="https://www.linkedin.com/in/danoravasaari/">LinkedIn</a></li>
-            <li><a href="REPLACE-WITH-YOUR-PLAYLIST-URL">YouTube reel</a></li>
+            <li><a href="https://www.youtube.com/playlist?list=PLfkn2Vz49m9syTGv1UATVTBihNnzCE9pE">YouTube reel</a></li>
           </ul>
         </aside>
       </div>
@@ -736,7 +735,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v29 (image categories from text lists, construction strip)";
+  var SITE_VERSION = "portfolio-v30 (reel.txt, eight image categories, placeholders filled)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -747,7 +746,7 @@
   var SECTIONS = [
     { id:"p-reel",      no:"01", tag:"Reel",         sub:"Shots and sequences. Staged and lit before the model sees them.",
       img:"assets/film/cell01.jpg", plate:"assets/plates/reel01.jpg" },
-    { id:"p-images",    no:"02", tag:"Images",       sub:"Stills, storyboards, key art, and the assets a scene cuts to.",
+    { id:"p-images",    no:"02", tag:"Images",       sub:"Key art, characters, storyboards, product work, and the assets a scene cuts to.",
       img:"assets/film/cell02.jpg", plate:"assets/plates/reel02.jpg" },
     { id:"p-workflows", no:"03", tag:"Workflows",    sub:"ComfyUI pipelines built for clients and for my own work.",
       img:"assets/film/cell03.jpg", plate:"assets/plates/reel03.jpg" },
@@ -953,12 +952,57 @@
     });
   });
 
-  // ---- each reel thumbnail plays its own video in the big player ----
-  // The thumb's data-video names the clip, its own image becomes the still frame,
-  // and data-title, data-note and data-tools fill the line under the player.
+  // ---- workflow count follows the cards actually on the page ----
+  (function () {
+    var fc = document.getElementById("flow-count");
+    if (!fc) return;
+    var n = document.querySelectorAll("#p-workflows .card").length;
+    fc.textContent = n + (n === 1 ? " workflow" : " workflows");
+  })();
+
+  // ---- the reel: built from assets/video/reel.txt ----
+  // One block per video in that file:
+  //   [reel01]
+  //   tags:  Narrative, VFX          (any of the Reel filter buttons, comma separated)
+  //   title: the bold title under the player
+  //   note:  one line on what you did
+  //   tools: ComfyUI, Premiere Pro   (commas become dots on the page)
+  //   name:  short label on the thumbnail (optional, the title is used if left out)
+  //   thumb: thumbnail file (optional, reel01 uses thumb01 automatically)
+  // Order in the file is order on the page. The first block loads in the player.
   var thumbs = document.getElementById("thumbs-reel");
   var player = document.getElementById("reel-player");
   var screenReel = document.getElementById("screen-reel");
+
+  function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]/g, ""); }
+
+  function parseReel(text) {
+    var items = [], cur = null;
+    text.split(/\r?\n/).forEach(function (line) {
+      var t = line.trim();
+      if (!t || t.charAt(0) === "#") return;
+      var head = t.match(/^\[(.+)\]$/);
+      if (head) {
+        cur = { video: head[1].trim(), tags: "", title: "", note: "", tools: "", name: "", thumb: "" };
+        items.push(cur);
+        return;
+      }
+      if (!cur) return;
+      var c = t.indexOf(":");
+      if (c < 0) return;
+      var key = t.slice(0, c).trim().toLowerCase(), val = t.slice(c + 1).trim();
+      if (key in cur && key !== "video") cur[key] = val;
+    });
+    return items;
+  }
+
+  function setCaption(t) {
+    var note = t.getAttribute("data-note") || "";
+    document.getElementById("reel-title").textContent = t.getAttribute("data-title") || "";
+    document.getElementById("reel-note").textContent = note;
+    document.getElementById("reel-note-wrap").hidden = !note;
+    document.getElementById("reel-tools").textContent = t.getAttribute("data-tools") || "";
+  }
 
   function showReel(t, play) {
     if (!t || !player) return;
@@ -977,10 +1021,7 @@
     if (poster) player.setAttribute("poster", poster); else player.removeAttribute("poster");
     player.setAttribute("src", t.getAttribute("data-video") || "");
     player.load();
-
-    document.getElementById("reel-title").textContent = t.getAttribute("data-title") || "";
-    document.getElementById("reel-note").textContent = t.getAttribute("data-note") || "";
-    document.getElementById("reel-tools").textContent = t.getAttribute("data-tools") || "";
+    setCaption(t);
 
     if (play) {
       // remembered so the clip still starts if the page has to fall back to .webm
@@ -995,17 +1036,56 @@
     if (player.paused) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
   });
 
+  function buildReel(text) {
+    var items = parseReel(text);
+    thumbs.textContent = "";
+    items.forEach(function (it, i) {
+      var vid = it.video;
+      if (!/\.[a-z0-9]+$/i.test(vid)) vid += ".mp4";
+      var base = vid.replace(/\.[^.]+$/, "");
+      var th = it.thumb || (/^reel/i.test(base) ? base.replace(/^reel/i, "thumb") : base + "-thumb");
+      if (!/\.[a-z0-9]+$/i.test(th)) th += ".jpg";
+      var tags = it.tags.split(",").map(slug).filter(Boolean);
+      var tools = it.tools.split(",").map(function (x) { return x.trim(); }).filter(Boolean).join(" · ");
+
+      var b = document.createElement("button");
+      b.className = "thumb";
+      b.setAttribute("data-t", tags.join(" "));
+      b.setAttribute("data-video", "assets/video/" + vid);
+      b.setAttribute("data-title", it.title);
+      b.setAttribute("data-note", it.note);
+      b.setAttribute("data-tools", tools);
+      var img = document.createElement("img");
+      img.alt = "";
+      // the thumbnail is also the player's still frame, so once it finishes loading
+      // (in whichever format exists) hand it to the player if this one is cued
+      img.addEventListener("load", function () {
+        if (b.getAttribute("aria-current") === "true" && player.paused && !player.currentTime) {
+          player.setAttribute("poster", img.currentSrc || img.src);
+        }
+      });
+      img.src = "assets/video/" + th;
+      b.appendChild(img);
+      var cap = document.createElement("span");
+      cap.className = "cap"; cap.textContent = it.name || it.title || base;
+      b.appendChild(cap);
+      thumbs.appendChild(b);
+    });
+
+    var count = document.getElementById("reel-count");
+    if (count) count.textContent = items.length + (items.length === 1 ? " shot" : " shots");
+    hideEmptyFilters("thumbs-reel");
+
+    // cue the first one without playing it
+    var first = thumbs.querySelector(".thumb");
+    if (first) showReel(first, false);
+  }
+
   if (thumbs) {
     thumbs.addEventListener("click", function (e) {
       showReel(e.target.closest(".thumb"), true);
     });
-    // fill the caption from thumbnail 01 on load, without autoplaying
-    var first = thumbs.querySelector('.thumb[aria-current="true"]') || thumbs.querySelector(".thumb");
-    if (first) {
-      document.getElementById("reel-title").textContent = first.getAttribute("data-title") || "";
-      document.getElementById("reel-note").textContent = first.getAttribute("data-note") || "";
-      document.getElementById("reel-tools").textContent = first.getAttribute("data-tools") || "";
-    }
+    readList("assets/video/reel.txt").then(buildReel);
   }
 
   // ---- contact sheet: every tile takes its image's real shape ----
@@ -1014,27 +1094,53 @@
   // image needs at that width, so the whole picture shows with no crop.
   var sheet = document.getElementById("sheet-images");
   function fitTile(c) {
-    var img = c.querySelector("img");
-    if (!img || !img.naturalWidth || img.style.display === "none" || c.hidden) return;
+    var m = c.querySelector("img, video");
+    if (!m || m.style.display === "none" || c.hidden) return;
+    var w = m.naturalWidth || m.videoWidth, hh = m.naturalHeight || m.videoHeight;
+    if (!w || !hh) return;
     // very wide images (panoramas, scope frames) take two columns when there is room
     var cols = getComputedStyle(sheet).gridTemplateColumns.split(" ").length;
-    c.style.gridColumn = (img.naturalWidth / img.naturalHeight >= 2.2 && cols > 1) ? "span 2" : "";
+    c.style.gridColumn = (w / hh >= 2.2 && cols > 1) ? "span 2" : "";
     var cs = getComputedStyle(sheet);
     var row = parseFloat(cs.gridAutoRows) || 10, gap = parseFloat(cs.rowGap) || 0;
-    var h = c.getBoundingClientRect().width * img.naturalHeight / img.naturalWidth;
+    var h = c.getBoundingClientRect().width * hh / w;
     c.style.gridRowEnd = "span " + Math.max(1, Math.round((h + gap) / (row + gap)));
   }
   function fitSheet() { if (sheet) sheet.querySelectorAll(".cell").forEach(fitTile); }
 
   // ---- the category lists ----
   // Each filter button reads one text file. To add a category later: add a button
-  // with a new data-f in the Images filters, and add one line here.
+  // with a new data-f in the Images filters, and add one line here. The order here
+  // is the order tiles appear under All.
   var CATEGORIES = [
-    { f: "still", file: "assets/images/stills.txt" },
-    { f: "board", file: "assets/images/storyboards.txt" },
-    { f: "key",   file: "assets/images/keyart.txt" },
-    { f: "char",  file: "assets/images/characters.txt" }
+    { f: "key",      file: "assets/images/keyart.txt" },
+    { f: "still",    file: "assets/images/stills.txt" },
+    { f: "char",     file: "assets/images/characters.txt" },
+    { f: "env",      file: "assets/images/environments.txt" },
+    { f: "board",    file: "assets/images/storyboards.txt" },
+    { f: "onscreen", file: "assets/images/onscreen.txt" },
+    { f: "product",  file: "assets/images/product.txt" },
+    { f: "anim",     file: "assets/images/animation.txt" }
   ];
+  var VIDEO_EXT = /\.(mp4|webm)$/i;
+
+  // a filter button with nothing behind it is hidden, so empty categories never show
+  function hideEmptyFilters(barFor) {
+    var bar = document.querySelector('[data-filter-for="' + barFor + '"]');
+    var target = document.getElementById(barFor);
+    if (!bar || !target) return;
+    var used = {};
+    target.querySelectorAll("[data-t]").forEach(function (item) {
+      (item.getAttribute("data-t") || "").split(" ").forEach(function (t) { if (t) used[t] = 1; });
+    });
+    bar.querySelectorAll("button").forEach(function (b) {
+      var f = b.getAttribute("data-f");
+      b.hidden = f !== "all" && !used[f];
+    });
+    // if the pressed button just disappeared, fall back to All
+    var pressed = bar.querySelector('[aria-pressed="true"]');
+    if (pressed && pressed.hidden) bar.querySelector('[data-f="all"]').click();
+  }
 
   function readList(url) {
     if (!window.fetch) return Promise.resolve("");
@@ -1069,11 +1175,23 @@
       b.className = "cell r-16";
       b.setAttribute("data-t", item.tags.join(" "));
       b.setAttribute("data-cap", item.cap);
-      var img = document.createElement("img");
-      img.alt = item.cap; img.loading = "lazy";
-      img.addEventListener("load", function () { fitTile(b); });
-      img.src = "assets/images/" + item.name;
-      b.appendChild(img);
+      if (VIDEO_EXT.test(item.name)) {
+        // a short loop: plays silently while it is on screen, like a moving still
+        var v = document.createElement("video");
+        v.muted = true; v.loop = true; v.playsInline = true; v.preload = "metadata";
+        v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
+        v.addEventListener("loadedmetadata", function () { fitTile(b); });
+        v.src = "assets/images/" + item.name;
+        b.appendChild(v);
+        b.classList.add("is-video");
+        if (loopWatch) loopWatch.observe(v);
+      } else {
+        var img = document.createElement("img");
+        img.alt = item.cap; img.loading = "lazy";
+        img.addEventListener("load", function () { fitTile(b); });
+        img.src = "assets/images/" + item.name;
+        b.appendChild(img);
+      }
       if (item.cap) {
         var c = document.createElement("span");
         c.className = "cap"; c.textContent = item.cap;
@@ -1083,12 +1201,22 @@
     });
 
     var count = document.getElementById("images-count");
-    if (count) count.textContent = order.length + (order.length === 1 ? " image" : " images");
+    if (count) count.textContent = order.length + (order.length === 1 ? " piece" : " pieces");
 
+    hideEmptyFilters("sheet-images");
     // re-apply whichever filter is pressed
     var pressed = document.querySelector('[data-filter-for="sheet-images"] [aria-pressed="true"]');
     if (pressed && pressed.getAttribute("data-f") !== "all") pressed.click();
   }
+
+  // loops in the sheet only run while they are actually on screen
+  var loopWatch = window.IntersectionObserver ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      var v = en.target;
+      if (en.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      else v.pause();
+    });
+  }, { threshold: 0.15 }) : null;
 
   if (sheet) {
     Promise.all(CATEGORIES.map(function (c) { return readList(c.file); })).then(buildSheet);
@@ -1101,16 +1229,25 @@
   var lb = document.getElementById("lb"), lbFrame = document.getElementById("lb-frame"), lbCap = document.getElementById("lb-cap");
   if (sheet) sheet.addEventListener("click", function (e) {
     var c = e.target.closest(".cell"); if (!c) return;
-    var img = c.querySelector("img");
-    if (!img || img.style.display === "none") return;     // nothing to show yet
+    var m = c.querySelector("img, video");
+    if (!m || m.style.display === "none") return;         // nothing to show yet
     lbFrame.innerHTML = "";
-    var big = document.createElement("img");
-    big.src = img.currentSrc || img.src; big.alt = "";
+    var big;
+    if (m.tagName === "VIDEO") {
+      big = document.createElement("video");
+      big.src = m.currentSrc || m.src; big.controls = true; big.loop = true;
+      big.playsInline = true; big.autoplay = true;
+      big.muted = !soundOn;
+    } else {
+      big = document.createElement("img");
+      big.src = m.currentSrc || m.src; big.alt = "";
+    }
     lbFrame.appendChild(big);
     lbCap.textContent = c.getAttribute("data-cap") || "";
     lb.showModal();
   });
   document.getElementById("lb-close").addEventListener("click", function () { lb.close(); });
+  lb.addEventListener("close", function () { lbFrame.innerHTML = ""; });   // stops a playing loop
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   var slot = document.getElementById("email-slot");
