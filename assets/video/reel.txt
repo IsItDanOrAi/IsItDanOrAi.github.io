@@ -1,56 +1,79 @@
 # REEL
-# One block per video. Each block starts with the video's file name in square
-# brackets, with no extension: [reel01] plays assets/video/reel01.mp4
-# The thumbnail with the same number is used automatically (reel01 uses thumb01).
+# This file builds the whole Reel section: the reels, the clips on each reel,
+# and the words on the slate under the player.
 #
-#   tags:   one or more of   Narrative, VFX, Commercial, Animation, R&D
-#           separate several with commas. A filter button with no videos is hidden.
-#   title:  the bold title under the player
-#   note:   one line on what you did (leave it out and the line just shows the title)
-#   tools:  the tools, separated by commas. They show on the right of the caption.
-#   name:   short label on the thumbnail (optional, the title is used if left out)
+# A REEL starts with a line like this. Its name shows on a tape label above
+# the player. Reels appear in the order they are listed here.
+#   == VFX ==
+#
+# Under a reel, one block per CLIP. The block starts with the video file name in
+# square brackets, without .mp4:  [reel07] plays assets/video/reel07.mp4
+# and uses thumb07 as its picture automatically.
+#
+#   title:  the title on the slate
+#   about:  what it is and what you did. Add more about: lines for more paragraphs.
+#   role:   your part in it
+#   tools:  separated by commas
+#   year:   when it was made
+#   name:   a shorter title for the film strip (optional)
 #   thumb:  a different thumbnail file (optional)
+# Leave a line out, or leave it empty, and that box on the slate is hidden.
 #
-# Order here is the order on the page. The FIRST block is what loads in the player,
-# so put your strongest shot first. To add a video: upload reel08.mp4 and
-# thumb08.png to assets/video, then add a [reel08] block. There is no limit.
-# Lines starting with # are ignored. To hide a video, put # in front of its lines.
+# The first clip of the first reel is what a visitor sees first, so lead with
+# your strongest. To add a clip: upload reel08.mp4 and thumb08.png to
+# assets/video, then add a [reel08] block under the reel it belongs to.
+# To move a clip to another reel, move its whole block. A reel with no clips is
+# hidden. Lines starting with # are ignored.
+
+== VFX ==
 
 [reel07]
-tags: VFX
 title: Green Screen Composite Breakdown
-note: A green screen plate taken to a finished shot: camera solve, stand-in bodies for light and shadow, key, clean plate. Made locally in ComfyUI.
-tools: ComfyUI, On-Set Studio, CorridorKey 2.0, COLMAP + GLOMAP, SAM 3D Body, Sapiens2, Qwen Image 2.1, MoGe-2
 name: Green Screen Breakdown
-
-[reel01]
-tags: Narrative
-title: Missed Call
-note:
-tools:
+about: A green screen plate taken to a finished shot. The camera is solved from the tracking markers, the set is rebuilt on that camera, and stand-in bodies for both actors cast and catch the light and shadows the plate never had.
+about: The key goes over a locked backdrop with colour match and light wrap, and the clean plate is rebuilt with the original pixels kept outside the actors. Made entirely locally, on my own PC, in ComfyUI.
+role: Pipeline and composite
+tools: ComfyUI, On-Set Studio, CorridorKey 2.0, COLMAP + GLOMAP, SAM 3D Body, Sapiens2, Qwen Image 2.1, MoGe-2
+year: 2026
 
 [reel02]
-tags: VFX
 title: MyPrecious
-note:
+about:
+role:
 tools:
-
-[reel04]
-tags: Narrative
-title: To The Victors Trailer
-note: Trailer for a short film.
-tools:
+year:
 
 [reel05]
-tags: VFX
 title: Face Replacement
-note:
+about:
+role:
 tools:
+year:
+
+== Trailers ==
+
+[reel04]
+title: To The Victors Trailer
+about: Trailer for a short film.
+role:
+tools:
+year:
+
+== Client Work ==
+# Your "Contract Clips". Add clips here and this reel appears.
+
+== Experiments ==
+# Your "Random Clips".
+
+[reel01]
+title: Missed Call
+about:
+role:
+tools:
+year:
 
 # reel03 and reel06 are waiting on their videos (thumb03 is uploaded already).
-# Remove the # from these lines once reel03.mp4 / reel06.mp4 are in assets/video.
+# Once reel03.mp4 is in assets/video, remove the # from these lines and move
+# them under the right reel.
 # [reel03]
-# tags: Narrative
 # title:
-# note:
-# tools:
