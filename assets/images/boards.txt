@@ -4,12 +4,12 @@
 # A line like  == Scene 26: The drive ==  starts a sequence. Under it, one panel
 # per line:   file | shot number | direction
 #   s26-01.jpg | 26.1 | TS/MS Evelyn and Dalton / frontal shot
-# The files live in assets/images/boards/. Sequences and panels appear in the
+# The files live in assets/images/. Sequences and panels appear in the
 # order written here. A line like  intro: ...  right after the first == line
 # is the sentence shown above all the sequences.
 # Lines starting with # are ignored.
 
-intro: Storyboards for a holiday special: about 300 boards in 4 to 5 days, to get a script that had fallen behind schedule into production. Shot numbers and directions are as written for the crew.
+intro: Storyboards for Miracle on Dream Street, a holiday special: about 300 boards in 4 to 5 days, to get a script that had fallen behind schedule into production. Shot numbers and directions are as written for the crew.
 
 
 == Scene 26: The drive ==
