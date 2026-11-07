@@ -1,5 +1,5 @@
-# KEY ART
-# Posters, one-sheets, title cards, episode thumbnails, campaign hero images.
+# KEY ART & ADVERTISING
+# Posters, one-sheets, title cards and campaign images, plus product and advertising work.
 #
 # One file per line. Extension optional for pictures (.jpg is assumed and
 # .webp / .png are tried too). Write the extension for loops: name.mp4 or name.gif
@@ -10,4 +10,7 @@
 # Add your images BELOW this line, one per line, with NO # in front.
 
 image05.png
-image09.png
+image02.png
+image03.png
+image04.png
+image12.png | Marketing photo: product replaced, relit, and text restored

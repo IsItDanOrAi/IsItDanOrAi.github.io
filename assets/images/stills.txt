@@ -1,5 +1,5 @@
-# FILM STILLS
-# Single cinematic frames: lighting, lensing, mood. Photoreal shots that stand alone.
+# FILM & TV STILLS
+# Cinematic frames, plus images made to appear inside a show (a photo the edit cuts to).
 #
 # One file per line. Extension optional for pictures (.jpg is assumed and
 # .webp / .png are tried too). Write the extension for loops: name.mp4 or name.gif
@@ -11,3 +11,5 @@
 
 image01.png
 image10.png
+image06.png
+image08.png
