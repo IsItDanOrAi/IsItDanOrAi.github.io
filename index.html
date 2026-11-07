@@ -386,6 +386,100 @@
   .sheet .cell.is-video::before{content:"";position:absolute;top:0.55rem;right:0.6rem;z-index:2;
     border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent rgba(236,234,229,.85)}
   .filters button[hidden]{display:none}
+
+  /* ============ THE REEL PLAYER ============
+     Reels are strips of camera tape, the way a camera assistant labels a can.
+     Clips sit on a strip of film under the player. The slate carries the words. */
+  .tapes{display:flex;flex-wrap:wrap;gap:0.55rem 0.7rem;margin:0 0 1.1rem}
+  .tape{
+    --tape:#E6DFCB;
+    position:relative;border:0;cursor:pointer;
+    padding:0.5rem 1.15rem 0.48rem;
+    background:var(--tape);color:#1C1C1E;
+    font-family:Archivo,sans-serif;font-weight:600;font-size:0.9rem;letter-spacing:0.005em;
+    display:inline-flex;align-items:baseline;gap:0.55rem;
+    /* torn ends, the way tape tears off the roll */
+    clip-path:polygon(0 6%,3% 0,97% 4%,100% 0,98.5% 22%,100% 46%,98% 70%,100% 100%,
+                      96% 96%,4% 100%,0 95%,1.6% 74%,0 50%,2% 27%);
+    opacity:0.5;transition:opacity .18s ease;
+  }
+  .tape .n{font-weight:500;font-size:0.78rem;color:#5C5A55;font-variant-numeric:tabular-nums}
+  .tape:hover{opacity:0.8}
+  .tape[aria-selected="true"]{opacity:1}
+  .tape:focus-visible{outline:2px solid var(--pencil);outline-offset:4px}
+
+  #screen-reel .endcard{
+    position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:1.1rem;text-align:center;padding:1rem;
+    background:rgba(10,10,11,.86);
+  }
+  #screen-reel .endcard[hidden]{display:none}
+  .endcard-line{margin:0;font-family:Archivo,sans-serif;font-size:clamp(1rem,1.8vw,1.35rem);color:var(--stock);font-weight:600}
+  .endcard-actions{display:flex;gap:0.7rem;flex-wrap:wrap;justify-content:center}
+  .endcard-actions button{font-family:Archivo,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;
+    padding:0.6rem 1rem;border:1px solid var(--stock-2);background:transparent;color:var(--stock)}
+  .endcard-actions .endcard-next{background:var(--stock);color:var(--ink);border-color:var(--stock)}
+  .endcard-actions .endcard-next[hidden]{display:none}
+
+  /* the strip: film base with perforations above and below the frames */
+  .strip{margin-top:0.9rem;background:#1B1C1F;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:thin;scrollbar-color:#3a3c42 transparent;scroll-snap-type:x proximity}
+  /* the film itself scrolls, so the perforations run the full length of the reel */
+  .strip-frames{list-style:none;margin:0;display:flex;gap:10px;width:max-content;min-width:100%;
+    padding:22px 14px 20px;
+    background:
+      linear-gradient(90deg,transparent 0 9px,#000 9px 21px,transparent 21px) 0 6px / 30px 9px repeat-x,
+      linear-gradient(90deg,transparent 0 9px,#000 9px 21px,transparent 21px) 0 calc(100% - 6px) / 30px 9px repeat-x,
+      #1B1C1F}
+  .strip-frames li{scroll-snap-align:start}
+  .frame-btn{
+    display:block;width:clamp(150px,17vw,212px);border:0;padding:0;background:none;cursor:pointer;
+    color:inherit;text-align:left;font-family:Archivo,sans-serif;
+  }
+  .frame-btn .pic{position:relative;display:block;aspect-ratio:16/9;background:#0c0d0f;overflow:hidden}
+  .frame-btn img{width:100%;height:100%;object-fit:cover;display:block;
+    filter:sepia(.35) saturate(.7) brightness(.62);transition:filter .2s ease}
+  .frame-btn:hover img{filter:sepia(.1) saturate(.95) brightness(.86)}
+  .frame-btn[aria-current="true"] img{filter:none}
+  .frame-btn .run{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--pencil)}
+  .frame-btn[aria-current="true"] .pic{box-shadow:0 0 0 2px var(--stock)}
+  /* edge numbers and the title live in the film margin, like edge code on stock */
+  .frame-btn .edge{display:flex;justify-content:space-between;gap:0.5rem;margin-top:6px;
+    font-size:0.68rem;color:#7D7A72;letter-spacing:0.04em;font-variant-numeric:tabular-nums}
+  .frame-btn .ttl{display:block;margin-top:2px;font-size:0.8rem;font-weight:600;color:var(--stock-2);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .frame-btn[aria-current="true"] .ttl{color:var(--stock)}
+  .frame-btn .missing{font-size:0.66rem}
+
+  /* the slate: the words for the clip in the gate */
+  .slatecard{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(1.25rem,3vw,3rem);
+    margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--seam)}
+  .slate-story h3{margin:0 0 0.55rem;font-size:clamp(1.2rem,2vw,1.6rem);font-weight:700;letter-spacing:-0.015em;line-height:1.15}
+  #reel-about p{margin:0 0 0.7rem;max-width:62ch;color:var(--stock-2);line-height:1.68}
+  .slate-grid{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    border-top:1px solid var(--seam);border-left:1px solid var(--seam);align-self:start}
+  .slate-grid > div{padding:0.55rem 0.7rem 0.6rem;border-right:1px solid var(--seam);border-bottom:1px solid var(--seam);min-width:0}
+  .slate-grid > div.wide{grid-column:1 / -1}
+  .slate-grid.no-year > div:nth-child(2){grid-column:span 2}
+  .slate-grid > div[hidden]{display:none}
+  .slate-grid dt{font-family:Archivo,sans-serif;font-size:0.7rem;color:var(--graphite);letter-spacing:0.03em;margin-bottom:0.15rem}
+  .slate-grid dd{margin:0;font-family:Archivo,sans-serif;font-size:0.88rem;color:var(--stock);line-height:1.4}
+  .slate-grid .next dd{color:var(--stock-2)}
+  .slate-grid .next dd button{all:unset;cursor:pointer;color:var(--pencil);text-decoration:underline;text-underline-offset:3px}
+  .slate-grid .next dd button:focus-visible{outline:2px solid var(--pencil);outline-offset:2px}
+
+  .reel-foot{display:flex;justify-content:space-between;align-items:center;gap:0.8rem 1.5rem;flex-wrap:wrap;
+    margin-top:1.4rem;font-family:Archivo,sans-serif;font-size:0.88rem;color:var(--graphite)}
+  .reel-foot p{margin:0}
+  .autoadv{display:inline-flex;align-items:center;gap:0.5rem;cursor:pointer;color:var(--stock-2)}
+  .autoadv input{accent-color:var(--pencil);width:15px;height:15px;margin:0}
+
+  @media (max-width:760px){
+    .slatecard{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .tape,.frame-btn img{transition:none}
+  }
   .thumb{overflow:hidden}
   .thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:#6b7078;font-family:Archivo,sans-serif;font-size:0.72rem}
   .thumb .cap{position:absolute;left:0;right:0;bottom:0;padding:0.45rem 0.6rem;font-family:Archivo,sans-serif;font-size:0.75rem;
@@ -522,26 +616,46 @@
         <div><h2>Reel</h2><p>Shots and sequences. Staged and lit before the model sees them.</p></div>
         <div class="meta"><span id="reel-count">&nbsp;</span><br>2024 to 2026</div>
       </div>
-      <div class="filters" data-filter-for="thumbs-reel">
-        <!-- The tags: lines in assets/video/reel.txt pick these. A button with no
-             videos behind it is hidden automatically. -->
-        <button aria-pressed="true" data-f="all">All</button>
-        <button aria-pressed="false" data-f="narrative">Narrative</button>
-        <button aria-pressed="false" data-f="vfx">VFX</button>
-        <button aria-pressed="false" data-f="commercial">Commercial</button>
-        <button aria-pressed="false" data-f="animation">Animation</button>
-        <button aria-pressed="false" data-f="rd">R&amp;D</button>
-      </div>
-      <!-- The player loads the first video listed in assets/video/reel.txt -->
+      <!-- Everything in the Reel is built from assets/video/reel.txt:
+           the reels (tape labels), the clips on the film strip, and the slate text. -->
+      <div class="tapes" id="reel-tapes" role="tablist" aria-label="Reels"></div>
+
       <div class="screen" id="screen-reel">
         <video id="reel-player" controls playsinline preload="metadata"></video>
+        <div class="endcard" id="reel-end" hidden>
+          <p class="endcard-line" id="reel-end-line"></p>
+          <div class="endcard-actions">
+            <button type="button" class="endcard-next" id="reel-end-next"></button>
+            <button type="button" class="endcard-again" id="reel-end-again">Watch this reel again</button>
+          </div>
+        </div>
       </div>
-      <div class="screen-cap" id="reel-cap"><span><b id="reel-title"></b><span id="reel-note-wrap"> &middot; <span id="reel-note"></span></span></span><span id="reel-tools"></span></div>
-      <!-- Built by the script from assets/video/reel.txt. No thumbnails live here. -->
-      <div class="thumbs" id="thumbs-reel"></div>
-      <p style="margin:1.25rem 0 0;font-family:Archivo,sans-serif;font-size:0.88rem;color:var(--graphite)">
+
+      <div class="strip" id="reel-strip">
+        <ol class="strip-frames" id="thumbs-reel" aria-label="Clips in this reel"></ol>
+      </div>
+
+      <div class="slatecard" id="reel-slate" aria-live="polite">
+        <div class="slate-story">
+          <h3 id="reel-title"></h3>
+          <div id="reel-about"></div>
+        </div>
+        <dl class="slate-grid">
+          <div><dt>Clip</dt><dd id="reel-pos"></dd></div>
+          <div><dt>Reel</dt><dd id="reel-name"></dd></div>
+          <div id="reel-year-row"><dt>Year</dt><dd id="reel-year"></dd></div>
+          <div id="reel-role-row" class="wide"><dt>Role</dt><dd id="reel-role"></dd></div>
+          <div id="reel-tools-row" class="wide"><dt>Tools</dt><dd id="reel-tools"></dd></div>
+          <div class="wide next"><dt>Up next</dt><dd id="reel-next"></dd></div>
+        </dl>
+      </div>
+
+      <div class="reel-foot">
+        <label class="autoadv"><input type="checkbox" id="reel-auto" checked> Play the next clip automatically</label>
+        <p>
         Full playlist on <a href="https://www.youtube.com/playlist?list=PLfkn2Vz49m9syTGv1UATVTBihNnzCE9pE">YouTube</a>.
-      </p>
+        </p>
+      </div>
     </section>
 
     <!-- ================= 02 IMAGES ================= -->
@@ -735,7 +849,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v30 (reel.txt, eight image categories, placeholders filled)";
+  var SITE_VERSION = "portfolio-v31 (reel player: tape reels, film strip, slate, auto-advance)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -961,132 +1075,272 @@
   })();
 
   // ---- the reel: built from assets/video/reel.txt ----
-  // One block per video in that file:
-  //   [reel01]
-  //   tags:  Narrative, VFX          (any of the Reel filter buttons, comma separated)
-  //   title: the bold title under the player
-  //   note:  one line on what you did
-  //   tools: ComfyUI, Premiere Pro   (commas become dots on the page)
-  //   name:  short label on the thumbnail (optional, the title is used if left out)
-  //   thumb: thumbnail file (optional, reel01 uses thumb01 automatically)
-  // Order in the file is order on the page. The first block loads in the player.
+  // A line like  == VFX ==  starts a reel (one tape label above the player).
+  // Under it, one block per clip:
+  //   [reel07]            the video file, assets/video/reel07.mp4
+  //   title:  bold title on the slate
+  //   about:  what it is and what you did. Several about: lines become paragraphs.
+  //   role:   your part in it
+  //   tools:  separated by commas
+  //   year:   when
+  //   name:   short title for the film strip (optional, the title is used if left out)
+  //   thumb:  a different thumbnail file (optional, reel07 uses thumb07 automatically)
+  // Reels appear in file order, clips in the order listed under their reel.
+  var tapes = document.getElementById("reel-tapes");
   var thumbs = document.getElementById("thumbs-reel");
+  var stripBox = document.getElementById("reel-strip");
   var player = document.getElementById("reel-player");
   var screenReel = document.getElementById("screen-reel");
-
-  function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]/g, ""); }
+  var endCard = document.getElementById("reel-end");
+  var autoBox = document.getElementById("reel-auto");
+  var REELS = [], curReel = 0, curClip = 0;
 
   function parseReel(text) {
-    var items = [], cur = null;
+    var reels = [], reel = null, clip = null;
+    function ensureReel(name) {
+      reel = { name: name, clips: [] };
+      reels.push(reel);
+    }
     text.split(/\r?\n/).forEach(function (line) {
       var t = line.trim();
       if (!t || t.charAt(0) === "#") return;
-      var head = t.match(/^\[(.+)\]$/);
-      if (head) {
-        cur = { video: head[1].trim(), tags: "", title: "", note: "", tools: "", name: "", thumb: "" };
-        items.push(cur);
+      var head = t.match(/^=+\s*(.*?)\s*=+$/);
+      if (head) { ensureReel(head[1] || "Reel"); clip = null; return; }
+      var block = t.match(/^\[(.+)\]$/);
+      if (block) {
+        if (!reel) ensureReel("Reel");
+        clip = { video: block[1].trim(), title: "", about: [], role: "", tools: "", year: "", name: "", thumb: "" };
+        reel.clips.push(clip);
         return;
       }
-      if (!cur) return;
+      if (!clip) return;
       var c = t.indexOf(":");
       if (c < 0) return;
       var key = t.slice(0, c).trim().toLowerCase(), val = t.slice(c + 1).trim();
-      if (key in cur && key !== "video") cur[key] = val;
+      if (key === "note") key = "about";                    // the older field name still works
+      if (key === "about") { if (val) clip.about.push(val); }
+      else if (key in clip && key !== "video") clip[key] = val;
     });
-    return items;
+    return reels.filter(function (r) { return r.clips.length; });
   }
 
-  function setCaption(t) {
-    var note = t.getAttribute("data-note") || "";
-    document.getElementById("reel-title").textContent = t.getAttribute("data-title") || "";
-    document.getElementById("reel-note").textContent = note;
-    document.getElementById("reel-note-wrap").hidden = !note;
-    document.getElementById("reel-tools").textContent = t.getAttribute("data-tools") || "";
+  function clipFiles(it) {
+    var vid = it.video;
+    if (!/\.[a-z0-9]+$/i.test(vid)) vid += ".mp4";
+    var base = vid.replace(/\.[^.]+$/, "");
+    var th = it.thumb || (/^reel/i.test(base) ? base.replace(/^reel/i, "thumb") : base + "-thumb");
+    if (!/\.[a-z0-9]+$/i.test(th)) th += ".jpg";
+    return { video: "assets/video/" + vid, thumb: "assets/video/" + th };
   }
 
-  function showReel(t, play) {
-    if (!t || !player) return;
-    thumbs.querySelectorAll(".thumb").forEach(function (x) { x.removeAttribute("aria-current"); });
-    t.setAttribute("aria-current", "true");
+  function timecode(sec) {
+    if (!isFinite(sec) || sec <= 0) return "";
+    sec = Math.round(sec);
+    return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0");
+  }
+
+  function setText(id, text, rowId) {
+    document.getElementById(id).textContent = text || "";
+    if (rowId) document.getElementById(rowId).hidden = !text;
+  }
+
+  // the slate: everything written about the clip in the gate
+  function fillSlate() {
+    var reel = REELS[curReel], it = reel.clips[curClip];
+    setText("reel-title", it.title || it.name || it.video);
+    var about = document.getElementById("reel-about");
+    about.textContent = "";
+    it.about.forEach(function (para) {
+      var p = document.createElement("p"); p.textContent = para; about.appendChild(p);
+    });
+    setText("reel-pos", (curClip + 1) + " of " + reel.clips.length);
+    setText("reel-name", reel.name);
+    setText("reel-year", it.year, "reel-year-row");
+    // with no year, Reel takes the empty box so the grid stays closed
+    document.querySelector(".slate-grid").classList.toggle("no-year", !it.year);
+    setText("reel-role", it.role, "reel-role-row");
+    setText("reel-tools", it.tools.split(",").map(function (x) { return x.trim(); })
+      .filter(Boolean).join(", "), "reel-tools-row");
+
+    var nextDd = document.getElementById("reel-next");
+    nextDd.textContent = "";
+    var nxt = reel.clips[curClip + 1];
+    if (nxt) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = nxt.title || nxt.name || nxt.video;
+      b.addEventListener("click", function () { cue(curClip + 1, true); });
+      nextDd.appendChild(b);
+    } else if (REELS[curReel + 1]) {
+      nextDd.append("End of this reel. ");
+      var r = document.createElement("button");
+      r.type = "button"; r.textContent = "Go to " + REELS[curReel + 1].name;
+      r.addEventListener("click", function () { openReel(curReel + 1, true); });
+      nextDd.appendChild(r);
+    } else {
+      nextDd.textContent = "Last clip on the last reel.";
+    }
+  }
+
+  // put one clip in the gate; play it if asked
+  function cue(i, play) {
+    var reel = REELS[curReel]; if (!reel || !reel.clips[i] || !player) return;
+    curClip = i;
+    var files = clipFiles(reel.clips[i]);
+    endCard.hidden = true;
+
+    thumbs.querySelectorAll(".frame-btn").forEach(function (x, n) {
+      if (n === i) x.setAttribute("aria-current", "true"); else x.removeAttribute("aria-current");
+      x.querySelector(".run").style.width = "0";
+    });
+    var btn = thumbs.querySelectorAll(".frame-btn")[i];
+    if (btn) {
+      // keep the current frame in view on the strip without moving the page
+      var li = btn.parentElement;
+      var left = li.offsetLeft - 14, right = left + li.offsetWidth + 28;
+      if (left < stripBox.scrollLeft || right > stripBox.scrollLeft + stripBox.clientWidth) {
+        stripBox.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+      }
+    }
 
     // clear any "missing file" label left by a previous clip
     var miss = screenReel.querySelector(".missing");
     if (miss) miss.remove();
     player.style.display = "";
 
-    // use whichever thumbnail format actually loaded (jpg, webp, png) as the still
-    var img = t.querySelector("img");
+    // the thumbnail doubles as the still frame, in whichever format loaded
+    var img = btn && btn.querySelector("img");
     var poster = img && img.currentSrc && img.style.display !== "none" ? img.currentSrc : "";
     player.pause();
     if (poster) player.setAttribute("poster", poster); else player.removeAttribute("poster");
-    player.setAttribute("src", t.getAttribute("data-video") || "");
+    player.setAttribute("src", files.video);
     player.load();
-    setCaption(t);
+    fillSlate();
 
     if (play) {
-      // remembered so the clip still starts if the page has to fall back to .webm
-      player.dataset.wantPlay = "1";
+      player.dataset.wantPlay = "1";                        // survives the .webm fallback
       var p = player.play();
-      if (p && p.catch) p.catch(function () {});   // file missing or blocked: stay on the still
+      if (p && p.catch) p.catch(function () {});
     }
   }
-  if (player) player.addEventListener("canplay", function () {
-    if (!player.dataset.wantPlay) return;
-    delete player.dataset.wantPlay;
-    if (player.paused) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
-  });
 
-  function buildReel(text) {
-    var items = parseReel(text);
+  // load a reel onto the strip
+  function openReel(r, play) {
+    if (!REELS[r]) return;
+    curReel = r;
+    tapes.querySelectorAll(".tape").forEach(function (t, n) {
+      t.setAttribute("aria-selected", String(n === r));
+      t.tabIndex = n === r ? 0 : -1;
+    });
     thumbs.textContent = "";
-    items.forEach(function (it, i) {
-      var vid = it.video;
-      if (!/\.[a-z0-9]+$/i.test(vid)) vid += ".mp4";
-      var base = vid.replace(/\.[^.]+$/, "");
-      var th = it.thumb || (/^reel/i.test(base) ? base.replace(/^reel/i, "thumb") : base + "-thumb");
-      if (!/\.[a-z0-9]+$/i.test(th)) th += ".jpg";
-      var tags = it.tags.split(",").map(slug).filter(Boolean);
-      var tools = it.tools.split(",").map(function (x) { return x.trim(); }).filter(Boolean).join(" · ");
-
+    REELS[r].clips.forEach(function (it, i) {
+      var files = clipFiles(it);
+      var li = document.createElement("li");
       var b = document.createElement("button");
-      b.className = "thumb";
-      b.setAttribute("data-t", tags.join(" "));
-      b.setAttribute("data-video", "assets/video/" + vid);
-      b.setAttribute("data-title", it.title);
-      b.setAttribute("data-note", it.note);
-      b.setAttribute("data-tools", tools);
-      var img = document.createElement("img");
-      img.alt = "";
-      // the thumbnail is also the player's still frame, so once it finishes loading
-      // (in whichever format exists) hand it to the player if this one is cued
+      b.type = "button"; b.className = "frame-btn";
+      b.setAttribute("aria-label", (it.title || it.name || it.video) + ", clip " + (i + 1));
+      var pic = document.createElement("span"); pic.className = "pic";
+      var img = document.createElement("img"); img.alt = "";
       img.addEventListener("load", function () {
+        // hand the still to the player if this clip is cued and not yet playing
         if (b.getAttribute("aria-current") === "true" && player.paused && !player.currentTime) {
           player.setAttribute("poster", img.currentSrc || img.src);
         }
       });
-      img.src = "assets/video/" + th;
-      b.appendChild(img);
-      var cap = document.createElement("span");
-      cap.className = "cap"; cap.textContent = it.name || it.title || base;
-      b.appendChild(cap);
-      thumbs.appendChild(b);
-    });
+      img.src = files.thumb;
+      var run = document.createElement("span"); run.className = "run";
+      pic.appendChild(img); pic.appendChild(run);
+      var edge = document.createElement("span"); edge.className = "edge";
+      var num = document.createElement("span"); num.textContent = String(i + 1).padStart(2, "0");
+      var dur = document.createElement("span"); dur.className = "dur";
+      edge.appendChild(num); edge.appendChild(dur);
+      var ttl = document.createElement("span"); ttl.className = "ttl";
+      ttl.textContent = it.name || it.title || it.video;
+      b.appendChild(pic); b.appendChild(edge); b.appendChild(ttl);
+      b.addEventListener("click", function () { cue(i, true); });
+      li.appendChild(b); thumbs.appendChild(li);
 
+      // read the running time from the file itself
+      var probe = document.createElement("video");
+      probe.preload = "metadata"; probe.muted = true;
+      probe.addEventListener("loadedmetadata", function () {
+        dur.textContent = timecode(probe.duration);
+        probe.removeAttribute("src"); probe.load();
+      });
+      probe.addEventListener("error", function () {
+        // same fallback as the player: no .mp4, try the .webm
+        var ps = probe.getAttribute("src") || "";
+        if (/\.mp4$/i.test(ps)) probe.setAttribute("src", ps.replace(/\.mp4$/i, ".webm"));
+      });
+      probe.src = files.video;
+    });
+    stripBox.scrollLeft = 0;
+    cue(0, !!play);
+  }
+
+  function buildReel(text) {
+    REELS = parseReel(text);
+    tapes.textContent = "";
+    var total = 0;
+    REELS.forEach(function (reel, r) {
+      total += reel.clips.length;
+      var t = document.createElement("button");
+      t.type = "button"; t.className = "tape"; t.setAttribute("role", "tab");
+      t.textContent = reel.name;
+      var n = document.createElement("span"); n.className = "n"; n.textContent = reel.clips.length;
+      t.appendChild(n);
+      t.addEventListener("click", function () { if (r !== curReel) openReel(r, false); });
+      tapes.appendChild(t);
+    });
+    // one tape is not a choice, so it is not shown
+    tapes.hidden = REELS.length < 2;
     var count = document.getElementById("reel-count");
-    if (count) count.textContent = items.length + (items.length === 1 ? " shot" : " shots");
-    hideEmptyFilters("thumbs-reel");
-
-    // cue the first one without playing it
-    var first = thumbs.querySelector(".thumb");
-    if (first) showReel(first, false);
+    if (count) count.textContent = total + (total === 1 ? " clip" : " clips") +
+      (REELS.length > 1 ? " on " + REELS.length + " reels" : "");
+    if (REELS.length) openReel(0, false);
   }
 
-  if (thumbs) {
-    thumbs.addEventListener("click", function (e) {
-      showReel(e.target.closest(".thumb"), true);
+  // arrow keys move between the tapes, as tabs should
+  if (tapes) tapes.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    var n = REELS.length; if (!n) return;
+    var r = (curReel + (e.key === "ArrowRight" ? 1 : -1) + n) % n;
+    openReel(r, false);
+    tapes.querySelectorAll(".tape")[r].focus();
+  });
+
+  if (player) {
+    player.addEventListener("canplay", function () {
+      if (!player.dataset.wantPlay) return;
+      delete player.dataset.wantPlay;
+      if (player.paused) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
     });
-    readList("assets/video/reel.txt").then(buildReel);
+    // the progress line along the bottom of the frame in the gate
+    player.addEventListener("timeupdate", function () {
+      var btn = thumbs.querySelectorAll(".frame-btn")[curClip];
+      if (btn && player.duration) btn.querySelector(".run").style.width = (100 * player.currentTime / player.duration) + "%";
+    });
+    // when a clip ends: the next one on this reel, or the end card
+    player.addEventListener("ended", function () {
+      var reel = REELS[curReel];
+      if (autoBox.checked && reel.clips[curClip + 1]) { cue(curClip + 1, true); return; }
+      if (reel.clips[curClip + 1]) return;                  // auto-advance is off: just stop
+      var nextReel = REELS[curReel + 1];
+      document.getElementById("reel-end-line").textContent = "End of the " + reel.name + " reel";
+      var nb = document.getElementById("reel-end-next");
+      nb.hidden = !nextReel;
+      if (nextReel) nb.textContent = "Play the " + nextReel.name + " reel";
+      endCard.hidden = false;
+      (nextReel ? nb : document.getElementById("reel-end-again")).focus({ preventScroll: true });
+    });
   }
+  document.getElementById("reel-end-next").addEventListener("click", function () { openReel(curReel + 1, true); });
+  document.getElementById("reel-end-again").addEventListener("click", function () { cue(0, true); });
+  try { if (localStorage.getItem("reel-auto") === "0") autoBox.checked = false; } catch (e) {}
+  autoBox.addEventListener("change", function () {
+    try { localStorage.setItem("reel-auto", autoBox.checked ? "1" : "0"); } catch (e) {}
+  });
+
+  if (thumbs) readList("assets/video/reel.txt").then(buildReel);
 
   // ---- contact sheet: every tile takes its image's real shape ----
   // The r-* class only sets a starting shape (and r-2 still spans two columns).
