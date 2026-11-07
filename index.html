@@ -25,13 +25,11 @@
 
                      WHICH images appear, and under which filter, is set by one
                      plain text file per category, in the same folder:
-                        keyart.txt        Key Art
-                        stills.txt        Film Stills
+                        keyart.txt        Key Art & Advertising
+                        stills.txt        Film & TV Stills
                         characters.txt    Characters
                         environments.txt  Environments
                         storyboards.txt   Storyboards
-                        onscreen.txt      On-Screen Assets
-                        product.txt       Product & Advertising
                         animation.txt     Animation
                      One file per line. Extension optional for pictures (image11
                      and image11.png both work). Short loops work too: write the
@@ -404,6 +402,12 @@
     opacity:0.5;transition:opacity .18s ease;
   }
   .tape .n{font-weight:500;font-size:0.78rem;color:#5C5A55;font-variant-numeric:tabular-nums}
+  /* a circled take: pencil ring drawn round the word, a little off true like a hand did it */
+  .circled{position:relative;display:inline-block}
+  .circled::after{content:"";position:absolute;inset:-0.28em -0.5em -0.22em -0.45em;
+    border:1.5px solid var(--pencil);border-radius:50%;transform:rotate(-4deg);pointer-events:none}
+  .frame-btn .edge .circled{color:var(--stock-2)}
+  .frame-btn .edge .circled::after{inset:-0.25em -0.45em;border-width:1.2px}
   .tape:hover{opacity:0.8}
   .tape[aria-selected="true"]{opacity:1}
   .tape:focus-visible{outline:2px solid var(--pencil);outline-offset:4px}
@@ -668,13 +672,11 @@
         <!-- One button per category list. A button whose list is empty is hidden
              automatically, so a category can sit ready until it has work in it. -->
         <button aria-pressed="true" data-f="all">All</button>
-        <button aria-pressed="false" data-f="key">Key Art</button>
-        <button aria-pressed="false" data-f="still">Film Stills</button>
+        <button aria-pressed="false" data-f="key">Key Art &amp; Advertising</button>
+        <button aria-pressed="false" data-f="still">Film &amp; TV Stills</button>
         <button aria-pressed="false" data-f="char">Characters</button>
         <button aria-pressed="false" data-f="env">Environments</button>
         <button aria-pressed="false" data-f="board">Storyboards</button>
-        <button aria-pressed="false" data-f="onscreen">On-Screen Assets</button>
-        <button aria-pressed="false" data-f="product">Product &amp; Advertising</button>
         <button aria-pressed="false" data-f="anim">Animation</button>
       </div>
       <!-- Built by the script from the category lists in assets/images/. No tiles live here. -->
@@ -849,7 +851,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v31 (reel player: tape reels, film strip, slate, auto-advance)";
+  var SITE_VERSION = "portfolio-v32 (Selects reel, six image categories)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -1085,6 +1087,7 @@
   //   year:   when
   //   name:   short title for the film strip (optional, the title is used if left out)
   //   thumb:  a different thumbnail file (optional, reel07 uses thumb07 automatically)
+  //   select: yes   also puts the clip on the Selects reel, which always comes first
   // Reels appear in file order, clips in the order listed under their reel.
   var tapes = document.getElementById("reel-tapes");
   var thumbs = document.getElementById("thumbs-reel");
@@ -1109,7 +1112,8 @@
       var block = t.match(/^\[(.+)\]$/);
       if (block) {
         if (!reel) ensureReel("Reel");
-        clip = { video: block[1].trim(), title: "", about: [], role: "", tools: "", year: "", name: "", thumb: "" };
+        clip = { video: block[1].trim(), title: "", about: [], role: "", tools: "", year: "", name: "", thumb: "",
+                 select: "", home: reel.name };
         reel.clips.push(clip);
         return;
       }
@@ -1121,8 +1125,17 @@
       if (key === "about") { if (val) clip.about.push(val); }
       else if (key in clip && key !== "video") clip[key] = val;
     });
-    return reels.filter(function (r) { return r.clips.length; });
+    reels = reels.filter(function (r) { return r.clips.length; });
+    // Selects: the circled takes. Every clip marked select: yes, in file order,
+    // gathered onto one reel that goes first. Each clip stays on its home reel too.
+    var picks = [];
+    reels.forEach(function (r) {
+      r.clips.forEach(function (c) { if (/^(yes|y|true|1)$/i.test(c.select)) picks.push(c); });
+    });
+    if (picks.length) reels.unshift({ name: "Selects", clips: picks, selects: true });
+    return reels;
   }
+  function isSelect(c) { return /^(yes|y|true|1)$/i.test(c.select); }
 
   function clipFiles(it) {
     var vid = it.video;
@@ -1154,7 +1167,7 @@
       var p = document.createElement("p"); p.textContent = para; about.appendChild(p);
     });
     setText("reel-pos", (curClip + 1) + " of " + reel.clips.length);
-    setText("reel-name", reel.name);
+    setText("reel-name", reel.selects ? "Selects, from " + it.home : reel.name);
     setText("reel-year", it.year, "reel-year-row");
     // with no year, Reel takes the empty box so the grid stays closed
     document.querySelector(".slate-grid").classList.toggle("no-year", !it.year);
@@ -1251,6 +1264,7 @@
       pic.appendChild(img); pic.appendChild(run);
       var edge = document.createElement("span"); edge.className = "edge";
       var num = document.createElement("span"); num.textContent = String(i + 1).padStart(2, "0");
+      if (isSelect(it) && !REELS[r].selects) { num.className = "circled"; num.title = "On the Selects reel"; }
       var dur = document.createElement("span"); dur.className = "dur";
       edge.appendChild(num); edge.appendChild(dur);
       var ttl = document.createElement("span"); ttl.className = "ttl";
@@ -1281,11 +1295,18 @@
     REELS = parseReel(text);
     tapes.textContent = "";
     var total = 0;
+    var homeReels = REELS.filter(function (x) { return !x.selects; }).length;
     REELS.forEach(function (reel, r) {
-      total += reel.clips.length;
+      if (!reel.selects) total += reel.clips.length;
       var t = document.createElement("button");
       t.type = "button"; t.className = "tape"; t.setAttribute("role", "tab");
-      t.textContent = reel.name;
+      if (reel.selects) {
+        t.classList.add("selects");
+        var w = document.createElement("span"); w.className = "circled"; w.textContent = reel.name;
+        t.appendChild(w);
+      } else {
+        t.textContent = reel.name;
+      }
       var n = document.createElement("span"); n.className = "n"; n.textContent = reel.clips.length;
       t.appendChild(n);
       t.addEventListener("click", function () { if (r !== curReel) openReel(r, false); });
@@ -1295,7 +1316,7 @@
     tapes.hidden = REELS.length < 2;
     var count = document.getElementById("reel-count");
     if (count) count.textContent = total + (total === 1 ? " clip" : " clips") +
-      (REELS.length > 1 ? " on " + REELS.length + " reels" : "");
+      (homeReels > 1 ? " on " + homeReels + " reels" : "");
     if (REELS.length) openReel(0, false);
   }
 
@@ -1372,8 +1393,6 @@
     { f: "char",     file: "assets/images/characters.txt" },
     { f: "env",      file: "assets/images/environments.txt" },
     { f: "board",    file: "assets/images/storyboards.txt" },
-    { f: "onscreen", file: "assets/images/onscreen.txt" },
-    { f: "product",  file: "assets/images/product.txt" },
     { f: "anim",     file: "assets/images/animation.txt" }
   ];
   var VIDEO_EXT = /\.(mp4|webm)$/i;
