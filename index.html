@@ -81,7 +81,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -169,8 +169,12 @@
   /* the right side is deliberately the quieter half: a modest plate and the title */
   .readout{display:grid;grid-template-columns:auto minmax(0,1fr);
     gap:clamp(1rem,2.2vw,2rem);align-items:center;height:var(--proj-h)}
-  .readout .caption h1{margin:0;font-size:clamp(1.35rem,2.4vw,2.15rem);letter-spacing:-0.025em;font-weight:700;line-height:1.04}
-  .readout .caption p{margin:0.45rem 0 0;color:var(--stock-2);max-width:44ch}
+  /* The section's only title. Set in the light serif and kept grey, like a title
+     card, so it reads apart from the bold page content below it. */
+  .readout .caption h1{margin:0;font-family:"Source Serif 4",Georgia,serif;font-weight:300;
+    font-size:clamp(2rem,3.8vw,3.3rem);letter-spacing:-0.015em;line-height:1.02;color:var(--stock-2)}
+  .readout .caption p{margin:0.6rem 0 0;font-family:Archivo,sans-serif;font-size:0.92rem;
+    color:var(--graphite);max-width:44ch;line-height:1.5}
   .readout .caption .roll{display:block;margin-bottom:0.5rem;font-family:Archivo,sans-serif;
     font-size:0.72rem;letter-spacing:0.16em;color:var(--graphite)}
 
@@ -325,8 +329,12 @@
   .panel[data-active]{display:block;animation:rise 420ms var(--ease)}
   @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;
-    padding-bottom:0.9rem;margin-bottom:1.5rem;border-bottom:1px solid var(--seam)}
+  .head{display:flex;justify-content:flex-end;align-items:flex-end;gap:1rem;flex-wrap:wrap;
+    padding-bottom:0.7rem;margin-bottom:1.5rem;border-bottom:1px solid var(--seam)}
+  .head .meta{display:flex;gap:0.4rem 1.2rem;flex-wrap:wrap;justify-content:flex-end}
+  .head .meta br{display:none}
+  /* the section name stays in the page for screen readers and search, not on screen */
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .head h2{margin:0;font-size:clamp(1.5rem,2.4vw,2.3rem);letter-spacing:-0.02em;font-weight:700}
   .head p{margin:0.2rem 0 0;color:var(--graphite);max-width:60ch}
   .meta{font-family:Archivo,sans-serif;font-size:0.82rem;color:var(--graphite);text-align:right}
@@ -529,6 +537,10 @@
 
   .contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,0.8fr);gap:clamp(1.5rem,4vw,3.5rem);align-items:start}
   .contact p{max-width:58ch;color:#DCDAD5}
+  .terms{margin:0 0 1.2rem;border-top:1px solid var(--seam)}
+  .terms > div{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:1rem;padding:0.55rem 0;border-bottom:1px solid var(--seam)}
+  .terms dt{font-family:Archivo,sans-serif;font-size:0.82rem;color:var(--graphite);padding-top:0.1rem}
+  .terms dd{margin:0;font-family:Archivo,sans-serif;font-size:0.95rem;color:var(--stock)}
   .contact .big{font-family:Archivo,sans-serif;font-size:clamp(1.3rem,2vw,1.8rem);font-weight:600;letter-spacing:-0.01em;margin:0 0 1rem;color:var(--stock)}
 
   dialog.lb{border:0;padding:0;background:transparent;max-width:min(94vw,1400px);max-height:94vh}
@@ -617,8 +629,8 @@
     <!-- ================= 01 REEL ================= -->
     <section class="panel" id="p-reel" role="tabpanel" aria-labelledby="t-reel" data-active>
       <div class="head">
-        <div><h2>Reel</h2><p>Shots and sequences. Staged and lit before the model sees them.</p></div>
-        <div class="meta"><span id="reel-count">&nbsp;</span><br>2024 to 2026</div>
+        <h2 class="vh">Reel</h2>
+        <div class="meta"><span id="reel-count">&nbsp;</span><span>2024 to 2026</span></div>
       </div>
       <!-- Everything in the Reel is built from assets/video/reel.txt:
            the reels (tape labels), the clips on the film strip, and the slate text. -->
@@ -665,7 +677,7 @@
     <!-- ================= 02 IMAGES ================= -->
     <section class="panel" id="p-images" role="tabpanel" aria-labelledby="t-images">
       <div class="head">
-        <div><h2>Images</h2><p>Key art, characters, storyboards, product work, and the assets a scene cuts to.</p></div>
+        <h2 class="vh">Images</h2>
         <div class="meta" id="images-count">&nbsp;</div>
       </div>
       <div class="filters" data-filter-for="sheet-images">
@@ -686,7 +698,7 @@
     <!-- ================= 03 WORKFLOWS ================= -->
     <section class="panel" id="p-workflows" role="tabpanel" aria-labelledby="t-workflows">
       <div class="head">
-        <div><h2>Workflows</h2><p>ComfyUI pipelines built for clients and for my own work. Shown as graph and result.</p></div>
+        <h2 class="vh">Workflows</h2>
         <div class="meta" id="flow-count">&nbsp;</div>
       </div>
       <div class="cards">
@@ -694,7 +706,7 @@
           <div class="plate"><img src="assets/work/flow01.jpg" alt="" loading="lazy"></div>
           <div class="body">
             <h3>Photo to template character</h3>
-            <p>One photo plus a gender selection returns a fixed character template with the head replaced in the template's style and skin tone matched. Fully automated. Shown on my own photo.</p>
+            <p>One photo plus a gender selection returns a fixed character template with the head replaced in the template's style and skin tone matched. Fully automated.</p>
             <div class="spec"><span>SAM 3 &middot; Qwen3-VL &middot; Flux.2 Klein</span><span>2026</span></div>
           </div>
         </article>
@@ -720,8 +732,8 @@
     <!-- ================= 04 CUSTOM NODES ================= -->
     <section class="panel" id="p-nodes" role="tabpanel" aria-labelledby="t-nodes">
       <div class="head">
-        <div><h2>Custom Nodes</h2><p>Tools I built because the way I work needed them.</p></div>
-        <div class="meta">On-Set Studio 1.0.0<br>September 2026</div>
+        <h2 class="vh">Custom Nodes</h2>
+        <div class="meta"><span>On-Set Studio 1.0.0</span><span>September 2026</span></div>
       </div>
 
       <div class="spot">
@@ -765,7 +777,7 @@
     <!-- ================= 05 WORK ================= -->
     <section class="panel" id="p-work" role="tabpanel" aria-labelledby="t-work">
       <div class="head">
-        <div><h2>Work</h2><p>Where the work above was made, and who I am.</p></div>
+        <h2 class="vh">Work</h2>
         <div class="meta"><a href="/Dan_Oravasaari_Resume.pdf">Resume (PDF)</a></div>
       </div>
       <div class="cues">
@@ -811,12 +823,17 @@
     <!-- ================= 06 CONTACT ================= -->
     <section class="panel" id="p-contact" role="tabpanel" aria-labelledby="t-contact">
       <div class="head">
-        <div><h2>Contact</h2><p>Full-time, contract, or a conversation about a shot you're stuck on.</p></div>
+        <h2 class="vh">Contact</h2>
       </div>
       <div class="contact">
         <div>
-          <p class="big">Looking for a long-term role on a team making AI images and video, ideally in film and television.</p>
-          <p>Remote preferred. Open to hybrid and on-site. I reply to everything.</p>
+          <p class="big">Looking for work on a team making AI images and video, ideally in film and television.</p>
+          <dl class="terms">
+            <div><dt>Work</dt><dd>Full-time, part-time, contract, freelance</dd></div>
+            <div><dt>Where</dt><dd>Remote, hybrid, in the office</dd></div>
+            <div><dt>Based</dt><dd>Sacramento area. Open to relocating with relocation assistance.</dd></div>
+          </dl>
+          <p>Also happy to talk through a shot you're stuck on. I reply to everything.</p>
           <div class="btn-row" style="margin-top:1rem">
             <a class="btn" href="https://www.linkedin.com/in/danoravasaari/">Message on LinkedIn</a>
             <a class="btn ghost" href="/Dan_Oravasaari_Resume.pdf">Resume (PDF)</a>
@@ -851,7 +868,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v32 (Selects reel, six image categories)";
+  var SITE_VERSION = "portfolio-v33 (one section header, contact terms)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -870,7 +887,7 @@
       img:"assets/film/cell04.jpg", plate:"assets/plates/reel04.jpg" },
     { id:"p-work",      no:"05", tag:"Work",         sub:"Where the work above was made, and who I am.",
       img:"assets/film/cell05.jpg", plate:"assets/plates/reel05.jpg" },
-    { id:"p-contact",   no:"06", tag:"Contact",      sub:"Full-time, contract, or a conversation about a shot.",
+    { id:"p-contact",   no:"06", tag:"Contact",      sub:"Full-time, part-time, contract or freelance. Remote, hybrid or in the office.",
       img:"assets/film/cell06.jpg", plate:"assets/plates/reel06.jpg" }
   ];
   var N = SECTIONS.length;
