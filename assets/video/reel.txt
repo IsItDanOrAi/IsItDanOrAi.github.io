@@ -10,31 +10,35 @@
 # square brackets, without .mp4:  [reel07] plays assets/video/reel07.mp4
 # and uses thumb07 as its picture automatically.
 #
-#   title:  the title on the slate
-#   about:  what it is and what you did. Add more about: lines for more paragraphs.
-#   role:   your part in it
-#   tools:  separated by commas
-#   year:   when it was made
-#   name:   a shorter title for the film strip (optional)
-#   thumb:  a different thumbnail file (optional)
+#   title:   the title on the slate
+#   about:   what it is and what you did. Add more about: lines for more paragraphs.
+#   role:    your part in it
+#   tools:   separated by commas
+#   year:    when it was made
+#   name:    a shorter title for the film strip (optional)
+#   thumb:   a different thumbnail file (optional)
+#   select:  yes   puts the clip on the SELECTS reel as well as its own reel.
+#            Selects always comes first, so the first select listed in this file
+#            is the first thing a visitor sees. Its number on the film strip of
+#            its own reel is circled, like a circled take.
 # Leave a line out, or leave it empty, and that box on the slate is hidden.
 #
-# The first clip of the first reel is what a visitor sees first, so lead with
-# your strongest. To add a clip: upload reel12.mp4 and thumb12.png to
-# assets/video, then add a [reel12] block under the reel it belongs to.
-# To move a clip to another reel, move its whole block. A reel with no clips is
-# hidden. Lines starting with # are ignored.
+# To add a clip: upload reel12.mp4 and thumb12.png to assets/video, then add a
+# [reel12] block under the reel it belongs to. To move a clip to another reel,
+# move its whole block. A reel with no clips is hidden.
+# Lines starting with # are ignored.
 
 == VFX ==
 
 [reel07]
-title: Green Screen Composite Breakdown
-name: Green Screen Breakdown
+title: Green Screen Compositing & Lighting Breakdown
+name: Compositing & Lighting
 about: A green screen plate taken to a finished shot. The camera is solved from the tracking markers, the set is rebuilt on that camera, and stand-in bodies for both actors cast and catch the light and shadows the plate never had.
 about: The key goes over a locked backdrop with colour match and light wrap, and the clean plate is rebuilt with the original pixels kept outside the actors. Made entirely locally, on my own PC, in ComfyUI.
-role: Pipeline and composite
+role: Compositing, lighting and pipeline
 tools: ComfyUI, On-Set Studio, CorridorKey 2.0, COLMAP + GLOMAP, SAM 3D Body, Sapiens2, Qwen Image 2.1, MoGe-2
 year: 2026
+select: yes
 
 [reel08]
 title: LTX-2 Effects Reel
@@ -45,10 +49,10 @@ year: 2025
 
 [reel09]
 title: Fire Effects Test
-about: A composite test: LTX adds the fire and smoke to live-action footage.
+about: A composite test: LTX-2 adds the fire and smoke to live-action footage.
 role:
-tools: LTX
-year:
+tools: LTX-2
+year: 2025
 
 [reel10]
 title: Fire Effects Test, Full AI
@@ -56,14 +60,7 @@ name: Fire Test, Full AI
 about: The same shot as the fire effects test, redone entirely in AI with an older MiniMax API model, for comparison with the composite.
 role:
 tools: MiniMax API
-year:
-
-[reel02]
-title: MyPrecious
-about:
-role:
-tools:
-year:
+year: 2025
 
 [reel05]
 title: Face Replacement
@@ -78,8 +75,15 @@ year:
 title: To the Victors Trailer
 about: A trailer for a short film concept about two brothers fighting for their father's throne. The project was cancelled.
 role:
+tools: LTX-2.3
+year: 2026
+
+[reel01]
+title: Missed Call
+about: A horror test short, made to push character consistency and camera motion across shots.
+role:
 tools:
-year:
+year: 2025
 
 == Client Work ==
 
@@ -88,24 +92,25 @@ title: The Magnificent Ambersons
 name: Magnificent Ambersons
 about: A segment from a project to recover Orson Welles' The Magnificent Ambersons, using AI to finish parts of the script that were recently recovered.
 role: Shot recreation, working directly with the producer
-tools: ComfyUI, LTX 2.5
+tools: ComfyUI, LTX-2.5
 year: 2026
 
 == Experiments ==
+
+[reel02]
+title: MyPrecious
+about: A CG character experiment.
+role:
+tools:
+year:
+select: yes
 
 [reel04]
 title: Hindsight
 about: A study in subtle emotion: a man at a window, turning over a regret without saying a word.
 role:
-tools:
-year:
-
-[reel01]
-title: Missed Call
-about:
-role:
-tools:
-year:
+tools: MiniMax H3
+year: 2026
 
 # reel06 is waiting on its video. Once reel06.mp4 and a thumbnail are in
 # assets/video, remove the # from these lines and move them under the right reel.
