@@ -59,7 +59,7 @@
 
   assets/work/       flow01.jpg ... flow03.jpg     the Workflows cards, 16:9
                      node01.jpg                    the ExLoadout card, 16:9
-                     method01.jpg                  the Method card, 16:9
+                     method01.jpg                  the Method picture (the wordmark), 16:9
 
   method.html        the Method project page, linked from its card. It uses
                      assets/video/method-trailer.mp4 and method-poster.jpg.
@@ -538,6 +538,11 @@
   .card .card-link{color:inherit;text-decoration:none}
   .card .card-link:hover{color:var(--pencil);text-decoration:underline}
   a.plate{text-decoration:none}
+  /* a spot whose picture opens its own page */
+  a.screen{display:block}
+  a.screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 200ms}
+  a.screen:hover img{opacity:.85}
+  .spot .credit{font-size:0.88rem;color:var(--graphite)}
   .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
   .card{background:var(--ink-2);border:1px solid var(--seam);display:flex;flex-direction:column}
   .card .plate{position:relative;overflow:hidden;aspect-ratio:16/9;background:#1b1e23;display:grid;place-items:center;color:#6b7078;
@@ -607,10 +612,20 @@
     font-family:Archivo,sans-serif;font-size:0.85rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   footer a{color:var(--graphite)}
 
+  .reel-nav{display:none}
+  .reel-nav .hint{margin:0 0 0.5rem;font-family:Archivo,sans-serif;font-size:0.8rem;color:var(--graphite)}
+  .reel-nav .chips{display:flex;flex-wrap:wrap;gap:0.4rem}
+  .reel-nav button{font-family:Archivo,sans-serif;font-size:0.85rem;font-weight:500;background:transparent;
+    color:var(--stock-2);border:1px solid var(--seam);padding:0.45rem 0.8rem;cursor:pointer}
+  .reel-nav button[aria-pressed="true"]{background:var(--stock);color:var(--ink);border-color:var(--stock)}
+
   @media (max-width:900px){
     .spot,.cues,.contact{grid-template-columns:1fr}
     .projector{grid-template-columns:1fr;height:auto;gap:1rem}
     .housing{display:none}
+    /* on a touchscreen a swipe on the film runs it instead of scrolling the page */
+    .film{touch-action:none}
+    .reel-nav{display:block}
     .film{--proj-h:clamp(190px,30vh,250px)}
     .readout{grid-template-columns:1fr;height:auto}
     .cell{height:auto;width:100%}
@@ -657,6 +672,13 @@
       <div class="spill" aria-hidden="true"></div>
       <div class="gatemark" aria-hidden="true"></div>
     </div>
+
+    <!-- phones only: the film can't show its "scroll or drag" note there, so the
+         sections are also spelled out as buttons, with a line on how to run it -->
+    <nav class="reel-nav" aria-label="Sections">
+      <p class="hint">Swipe the film up or down, or pick a section</p>
+      <div class="chips" id="reel-chips"></div>
+    </nav>
 
     <!-- what the gate is projecting, kept deliberately quieter than the film -->
     <div class="readout">
@@ -818,6 +840,35 @@
         </div>
       </div>
 
+
+      <h3 class="group">Explorations</h3>
+      <div class="spot">
+        <div>
+          <!-- ASSET: assets/work/method01.jpg, 16:9, the Method wordmark -->
+          <a class="screen" href="method.html" data-same-tab aria-label="Method: watch the trailer and see how it works">
+            <img src="assets/work/method01.jpg" alt="Method" loading="lazy">
+          </a>
+          <div class="screen-cap"><span><b>Method</b> &middot; a digital actor from one photo and one voice</span><span>2026</span></div>
+        </div>
+        <div>
+          <h3>Method</h3>
+          <p class="kicker">Software for digital actors. A personal proof of concept.</p>
+          <p>Give it one photo, one short voice clip and a line about who the character is. It builds a photoreal head, clones the voice, has the AI write the personality, and puts a character on stage that you can talk to.</p>
+          <ul>
+            <li>Answers in its own voice, with lip sync, and emotion in its face and voice</li>
+            <li>Takes spoken direction like an actor: "look angry", "a bit more", "sit"</li>
+            <li>Two characters can play a scene together, improvised or half-scripted</li>
+            <li>Runs in the browser and in VR, entirely on one home PC, no paid services</li>
+          </ul>
+          <p class="credit">Designed, directed and tested by me. Code written with Claude, an AI from Anthropic, as pair programmer.</p>
+          <div class="btn-row">
+            <a class="btn" href="method.html" data-same-tab>Watch the trailer</a>
+            <a class="btn ghost" href="method.html#how" data-same-tab>How it works</a>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="group">Utilities</h3>
       <div class="cards">
         <article class="card">
           <div class="plate"><img src="assets/work/node01.jpg" alt="" loading="lazy"></div>
@@ -825,20 +876,6 @@
             <h3>ComfyUI-ExLoadout</h3>
             <p>Read and write Excel spreadsheet data inside ComfyUI workflows.</p>
             <div class="spec"><span>Python</span><span><a href="https://github.com/IsItDanOrAi">GitHub</a></span></div>
-          </div>
-        </article>
-      </div>
-
-      <h3 class="group">Explorations</h3>
-      <div class="cards">
-        <article class="card">
-          <!-- ASSET: assets/work/method01.jpg, 16:9, a frame of a Method character mid-line -->
-          <a class="plate" href="method.html" data-same-tab aria-label="Method: watch the trailer and see how it works"><img src="assets/work/method01.jpg" alt="" loading="lazy"></a>
-          <div class="body">
-            <h3><a class="card-link" href="method.html" data-same-tab>Method</a></h3>
-            <p>A real-time AI actor from one photo and one short voice clip. It answers in its own voice, shows emotion in its face and voice, takes spoken direction like an actor, and has a written personality and history behind every line. Runs in the browser and in VR on one home PC, with no paid services.</p>
-            <p class="credit">Designed, directed and tested by me. Code written with Claude, an AI from Anthropic, as pair programmer.</p>
-            <div class="spec"><span>three.js &middot; Python &middot; local AI models</span><span><a href="method.html" data-same-tab>Trailer and how it works</a></span></div>
           </div>
         </article>
       </div>
@@ -938,7 +975,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v37 (Method card opens method.html)";
+  var SITE_VERSION = "portfolio-v38 (Method featured, phone reel controls)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -1063,6 +1100,8 @@
     ph.style.backgroundPosition = "center";
     probeBackground(ph, sec.plate, sec.plate.split("/").pop());
     if (push) queueHash(sec.id.replace(/^p-/, ""));
+    var chips = document.querySelectorAll("#reel-chips button");
+    for (var c = 0; c < chips.length; c++) chips[c].setAttribute("aria-pressed", String(c === index));
   }
 
   // once the run finishes, adopt the new position and quietly re-register the film
@@ -1140,6 +1179,31 @@
     if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); advance(1); }
     if (e.key === "ArrowUp" || e.key === "PageUp") { e.preventDefault(); advance(-1); }
   });
+
+  // phones: a button per section. Near ones run the film there; the far one
+  // (three away, past what the five slots can show) jumps straight to it.
+  var chipBox = document.getElementById("reel-chips");
+  if (chipBox) {
+    SECTIONS.forEach(function (sec, i) {
+      var c = document.createElement("button");
+      c.type = "button";
+      c.textContent = sec.tag;
+      c.setAttribute("aria-pressed", "false");
+      c.addEventListener("click", function () { goTo(i); });
+      chipBox.appendChild(c);
+    });
+  }
+  function goTo(i) {
+    if (animating) settle();
+    var d = mod(i - cur, N);
+    if (d > N / 2) d -= N;
+    if (!d) return;
+    if (Math.abs(d) <= MID) { advance(d); return; }
+    cur = i;
+    render();
+    centre(MID, true);
+    select(i, true);
+  }
 
   // ---------- filters, thumbnails, lightbox, email ----------
   document.querySelectorAll(".filters").forEach(function (bar) {

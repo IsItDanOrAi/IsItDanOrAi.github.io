@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <!--
-  method.html (method-page-v1): the Method project page, linked from the
+  method.html (method-page-v2): the Method project page, linked from the
   Projects card on the main page.
 
   FILES THIS PAGE USES
     assets/video/method-trailer.mp4   the trailer from Project: Trailer Cut.
                                       Render it with crf 22 or 23 so it stays
                                       well under GitHub's 25 MB upload limit.
-    assets/video/method-poster.jpg    the trailer's still frame, 16:9
+    assets/video/method-poster.jpg    the trailer's still frame, 16:9 (the
+                                      Method wordmark, so the page leads with
+                                      the software rather than the demo face)
   A missing file shows a labelled grey box instead of breaking the page.
 -->
 <html lang="en">
@@ -184,7 +186,7 @@
     <video src="assets/video/method-trailer.mp4" poster="assets/video/method-poster.jpg"
            controls playsinline preload="metadata"></video>
   </div>
-  <div class="screen-cap"><span><b>Method</b> &middot; trailer, cut with a ComfyUI node I built for it</span><span>Kratos fan test</span></div>
+  <div class="screen-cap"><span><b>Method</b> &middot; trailer, cut with a ComfyUI node I built for it</span><span>Demo character: a fan test</span></div>
 
   <section>
     <h2>At a glance</h2>
@@ -198,7 +200,7 @@
     </dl>
   </section>
 
-  <section>
+  <section id="how">
     <h2>From a photo to a performance</h2>
     <p class="intro">No hand-built 3D assets anywhere in between.</p>
     <ol class="steps">
@@ -370,7 +372,7 @@
 
 <script>
 (function () {
-  var PAGE_VERSION = "method-page-v1";
+  var PAGE_VERSION = "method-page-v2";
   try { console.log("%c" + PAGE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // a missing trailer shows a labelled box naming the file it wanted
