@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<!--
+  method.html (method-page-v1): the Method project page, linked from the
+  Projects card on the main page.
+
+  FILES THIS PAGE USES
+    assets/video/method-trailer.mp4   the trailer from Project: Trailer Cut.
+                                      Render it with crf 22 or 23 so it stays
+                                      well under GitHub's 25 MB upload limit.
+    assets/video/method-poster.jpg    the trailer's still frame, 16:9
+  A missing file shows a labelled grey box instead of breaking the page.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Method - Dan Oravasaari</title>
+<meta name="description" content="Method: a real-time, directable AI actor made from one photo and one short voice clip, running on one home PC.">
+<meta property="og:title" content="Method - Dan Oravasaari">
+<meta property="og:description" content="A real-time AI actor from one photo and one voice clip. It talks, takes direction and plays scenes, all on one home PC.">
+<meta property="og:image" content="https://isitdanorai.github.io/assets/video/method-poster.jpg">
+<meta property="og:url" content="https://isitdanorai.github.io/method.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+
+<style>
+  /* the same stock and ink as the main page */
+  :root{
+    --ink:#111214;
+    --ink-2:#17181B;
+    --stock:#E8E6E1;
+    --stock-2:#C9C6BE;
+    --graphite:#8E9096;
+    --pencil:#4C93D6;
+    --seam:rgba(232,230,225,0.14);
+    --pad:clamp(1rem,3vw,2.25rem);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;overflow-y:scroll;scrollbar-gutter:stable}
+  body{margin:0;background:var(--ink);color:var(--stock);
+    font-family:"Source Serif 4",Georgia,serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+  a{color:var(--pencil);text-underline-offset:3px}
+  :focus-visible{outline:2px solid var(--pencil);outline-offset:3px}
+  img,video{display:block;max-width:100%}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:var(--pad)}
+
+  .masthead{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
+    padding:1rem 0 0.9rem;border-bottom:1px solid var(--seam)}
+  .masthead .name{font-family:Archivo,sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:-0.01em;color:var(--stock);text-decoration:none}
+  .masthead .back{font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--graphite);text-decoration:none}
+  .masthead .back:hover{color:var(--stock)}
+
+  /* the title card: the main page's section-title serif, light and grey */
+  .title{padding:clamp(2rem,6vw,4rem) 0 1.5rem}
+  .title .roll{display:block;margin-bottom:0.6rem;font-family:Archivo,sans-serif;
+    font-size:0.72rem;letter-spacing:0.16em;color:var(--graphite);text-transform:uppercase}
+  .title h1{margin:0;font-family:"Source Serif 4",Georgia,serif;font-weight:300;
+    font-size:clamp(2.6rem,7vw,5rem);letter-spacing:-0.02em;line-height:1;color:var(--stock-2)}
+  .title .lede{margin:1rem 0 0;max-width:58ch;font-size:clamp(1.05rem,1.6vw,1.25rem);color:#DCDAD5}
+
+  .screen{position:relative;overflow:hidden;background:#0b0c0e;aspect-ratio:16/9;border:1px solid var(--seam)}
+  .screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+  .screen-cap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+    padding:0.7rem 0.1rem 0;font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--graphite)}
+  .screen-cap b{color:var(--stock);font-weight:600}
+  .missing{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0.4rem;
+    background:#191B1F;color:#71757C;font-family:Archivo,sans-serif;font-size:0.8rem;letter-spacing:0.04em;z-index:1}
+
+  section{padding:clamp(2.2rem,5vw,3.5rem) 0 0}
+  section > h2{margin:0 0 0.4rem;font-family:"Source Serif 4",Georgia,serif;font-weight:300;
+    font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-0.015em;color:var(--stock-2)}
+  section > .intro{margin:0 0 1.4rem;max-width:62ch;color:var(--stock-2)}
+  h3{margin:0 0 0.4rem;font-size:1.02rem;font-weight:600}
+  p{margin:0 0 0.8rem}
+
+  /* at a glance */
+  dl.glance{display:grid;grid-template-columns:minmax(120px,190px) 1fr;margin:0;border-top:1px solid var(--seam)}
+  dl.glance dt,dl.glance dd{margin:0;padding:0.7rem 0;border-bottom:1px solid var(--seam)}
+  dl.glance dt{font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--graphite);padding-top:0.85rem}
+  dl.glance dd{color:#DCDAD5}
+
+  /* steps */
+  ol.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;counter-reset:s}
+  ol.steps li{counter-increment:s;background:var(--ink-2);border:1px solid var(--seam);padding:1rem 1.1rem 1.1rem}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);display:block;font-family:Archivo,sans-serif;
+    font-size:0.75rem;letter-spacing:0.14em;color:var(--pencil);margin-bottom:0.35rem}
+  ol.steps p{margin:0;color:var(--stock-2);font-size:0.95rem}
+
+  /* architecture: three viewers, one web app, one orchestrator, four services */
+  .arch{display:grid;gap:0.6rem;font-family:Archivo,sans-serif}
+  .arch .row{display:grid;gap:0.6rem}
+  .arch .r3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .arch .r4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .arch .box{border:1px solid var(--seam);background:var(--ink-2);padding:0.75rem 0.85rem}
+  .arch .box b{display:block;font-size:0.92rem;font-weight:600;color:var(--stock)}
+  .arch .box span{display:block;margin-top:0.2rem;font-size:0.8rem;line-height:1.45;color:var(--graphite)}
+  .arch .box.hub{border-color:rgba(76,147,214,.55);background:rgba(76,147,214,.07)}
+  .arch .box.once{border-style:dashed}
+  .arch .link{text-align:center;font-size:0.78rem;color:var(--graphite);padding:0.1rem 0}
+  .arch-note{margin-top:0.8rem;font-family:Archivo,sans-serif;font-size:0.82rem;color:var(--graphite)}
+
+  /* systems */
+  .systems{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+  .sys{background:var(--ink-2);border:1px solid var(--seam);padding:1.1rem 1.2rem 1.2rem}
+  .sys ul{margin:0;padding-left:1.05rem;color:var(--stock-2);font-size:0.95rem}
+  .sys li{margin-bottom:0.45rem}
+  .sys li b{color:var(--stock);font-weight:600}
+
+  /* numbers */
+  .numbers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--seam);border:1px solid var(--seam)}
+  .num{background:var(--ink);padding:1rem 1.1rem}
+  .num .v{font-family:Archivo,sans-serif;font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);letter-spacing:-0.02em;color:var(--stock)}
+  .num .k{margin-top:0.2rem;font-size:0.88rem;color:var(--graphite);line-height:1.45}
+
+  /* problems */
+  .problems{width:100%;border-collapse:collapse;font-size:0.95rem}
+  .problems th{text-align:left;font-family:Archivo,sans-serif;font-weight:500;font-size:0.8rem;color:var(--graphite);
+    padding:0 0.9rem 0.5rem 0;border-bottom:1px solid var(--seam)}
+  .problems td{vertical-align:top;padding:0.75rem 0.9rem 0.75rem 0;border-bottom:1px solid var(--seam);color:var(--stock-2)}
+  .problems td:first-child{color:var(--stock)}
+
+  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.25rem,4vw,3rem)}
+  .two p{color:#DCDAD5}
+  ol.method{margin:0;padding-left:1.2rem;color:var(--stock-2)}
+  ol.method li{margin-bottom:0.55rem}
+  ol.method b{color:var(--stock);font-weight:600}
+
+  /* timeline */
+  .cue{display:grid;grid-template-columns:110px 1fr;gap:1rem;padding:0.75rem 0;border-top:1px solid var(--seam)}
+  .cue .when{font-family:Archivo,sans-serif;font-size:0.85rem;color:var(--graphite);padding-top:0.1rem}
+  .cue p{margin:0;color:var(--stock-2)}
+
+  .note{margin-top:1.4rem;padding:1rem 1.1rem;border:1px solid var(--seam);background:var(--ink-2);color:var(--stock-2);font-size:0.95rem}
+  .note b{color:var(--stock)}
+
+  .btn-row{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1.2rem}
+  .btn{display:inline-block;font-family:Archivo,sans-serif;font-weight:600;font-size:0.9rem;
+    padding:0.6rem 1rem;background:var(--stock);color:var(--ink);text-decoration:none;border:1px solid var(--stock)}
+  .btn.ghost{background:transparent;color:var(--stock)}
+  .btn:hover{background:var(--pencil);border-color:var(--pencil);color:#0b0d10}
+
+  footer{margin-top:clamp(2.5rem,6vw,4rem);border-top:1px solid var(--seam);padding:1.5rem 0 2.5rem;color:var(--graphite);
+    font-family:Archivo,sans-serif;font-size:0.85rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  footer a{color:var(--graphite)}
+
+  @media (max-width:760px){
+    .arch .r3,.arch .r4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+    .two{grid-template-columns:minmax(0,1fr)}
+    dl.glance{grid-template-columns:minmax(0,1fr)}
+    dl.glance dt{border-bottom:0;padding-bottom:0}
+    .problems thead{display:none}
+    .problems tr{display:block;border-bottom:1px solid var(--seam);padding:0.6rem 0}
+    .problems td{display:block;border:0;padding:0.15rem 0}
+    .problems td::before{content:attr(data-h);display:block;font-family:Archivo,sans-serif;font-size:0.75rem;color:var(--graphite)}
+    .cue{grid-template-columns:minmax(0,1fr);gap:0.2rem}
+    .numbers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:420px){
+    .arch .r3,.arch .r4{grid-template-columns:minmax(0,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="name" href="/">Dan Oravasaari</a>
+    <a class="back" href="/#nodes">&larr; Back to Projects</a>
+  </header>
+
+  <div class="title">
+    <span class="roll">Projects &middot; Explorations &middot; 2026</span>
+    <h1>Method</h1>
+    <p class="lede">One photo. One voice. A mind that remembers. A real-time AI actor that talks with you in its own voice, shows emotion in its face, takes spoken direction like an actor, and plays scenes with a second actor. It runs entirely on one home PC.</p>
+  </div>
+
+  <div class="screen">
+    <video src="assets/video/method-trailer.mp4" poster="assets/video/method-poster.jpg"
+           controls playsinline preload="metadata"></video>
+  </div>
+  <div class="screen-cap"><span><b>Method</b> &middot; trailer, cut with a ComfyUI node I built for it</span><span>Kratos fan test</span></div>
+
+  <section>
+    <h2>At a glance</h2>
+    <dl class="glance">
+      <dt>What it is</dt><dd>A real-time, directable AI actor: a photoreal head, a body, a voice and a personality.</dd>
+      <dt>What goes in</dt><dd>One face photo, a 5 to 15 second voice clip, and a line about who the character is. The AI writes the personality from that line, and every line of it can be edited by hand.</dd>
+      <dt>What comes out</dt><dd>A character you talk to, direct, put in two-person scenes, and view in VR.</dd>
+      <dt>Runs on</dt><dd>One Windows PC (RTX 4090 and RTX 5060 Ti), viewed in Chrome, on a Meta Quest 3, or on a phone over home Wi-Fi. No cloud, no paid services.</dd>
+      <dt>Built with</dt><dd>three.js and WebXR (TypeScript), a Python FastAPI server, and local AI models: Qwen 27B through Ollama, faster-whisper, Chatterbox Turbo and IndexTTS voice cloning, LAM one-photo Gaussian heads, and the FLAME face model.</dd>
+      <dt>Status</dt><dd>Personal proof of concept, under active development. Not for sale or distribution.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>From a photo to a performance</h2>
+    <p class="intro">No hand-built 3D assets anywhere in between.</p>
+    <ol class="steps">
+      <li><h3>Make a character</h3><p>Drop in a photo and give it a name. The server builds a photoreal Gaussian splat head, rigs it onto an animated face, picks skin and eye colours, keeps or grows the hair, and writes the character file.</p></li>
+      <li><h3>Give it a life</h3><p>The local language model drafts a long-form personality from one line or a pasted bio: a short core, sections like History and Wants and fears, and memories in the character's own words.</p></li>
+      <li><h3>Give it a voice</h3><p>Any short reference clip becomes the character's voice. Two speech engines, switchable live.</p></li>
+      <li><h3>Talk to it</h3><p>Speak or type. It answers in its own voice within a few seconds, with lip sync, blinks, glances, breathing, and an emotion that shows in its face, head and voice.</p></li>
+      <li><h3>Direct it</h3><p>Mix plain notes into the conversation: "look angry", "a bit more skeptical", "look left", "sit". It obeys silently, the way an actor takes a note, until released.</p></li>
+      <li><h3>Stage a scene</h3><p>Two characters side by side, improvised or half-scripted. They look at each other as they speak while staying open to the camera, and the director can step in as a third.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>How it fits together</h2>
+    <p class="intro">The browser draws, a Python orchestrator runs the conversation and the performance, and each AI model runs as its own local service.</p>
+    <div class="arch" role="img" aria-label="Three viewers connect to one web app, which talks over a WebSocket to an orchestrator, which drives four local services.">
+      <div class="row r3">
+        <div class="box"><b>Desktop Chrome</b><span>full graphics, rendered on the 4090</span></div>
+        <div class="box"><b>Meta Quest 3</b><span>WebXR, streamed over Air Link</span></div>
+        <div class="box"><b>Phone or Quest browser</b><span>home Wi-Fi, HTTPS and a password</span></div>
+      </div>
+      <div class="link">&darr;</div>
+      <div class="box"><b>Web app (TypeScript, three.js, WebXR)</b><span>Gaussian splat head on an animated FLAME face (51 ARKit shapes), MakeHuman body with Mixamo clips, the life layer (blinks, gaze, breathing), lip sync on the audio clock, hair motion, scenes, the tabbed interface</span></div>
+      <div class="link">&uarr; WebSocket: mic audio up; words, voice, visemes and direction down &darr;</div>
+      <div class="box hub"><b>Orchestrator (Python, FastAPI)</b><span>voice activity detection, the direction grammar, one emotion state, persona recall, memory per version, character files, two-actor scenes, the take log, phoneme alignment for lip sync</span></div>
+      <div class="link">&darr;</div>
+      <div class="row r4">
+        <div class="box"><b>Speech recognition</b><span>faster-whisper large-v3-turbo, on the 5060 Ti</span></div>
+        <div class="box"><b>Language model</b><span>Qwen 27B in Ollama, writes the lines and moods, on the 4090</span></div>
+        <div class="box"><b>Voice</b><span>Chatterbox Turbo or IndexTTS-2.5, on the 5060 Ti</span></div>
+        <div class="box once"><b>Create tools</b><span>LAM head from a photo, FLAME fit, hair, body. Run once per character</span></div>
+      </div>
+    </div>
+    <p class="arch-note">Each model runs in its own process and Python environment, so their dependencies never collide.</p>
+  </section>
+
+  <section>
+    <h2>The systems</h2>
+    <p class="intro">Each was built as its own phase, with its own test.</p>
+    <div class="systems">
+      <div class="sys">
+        <h3>Conversation and personality</h3>
+        <ul>
+          <li><b>Listening.</b> Silero voice detection finds where speech starts and ends, and merges a pause of under 2 s into one turn.</li>
+          <li><b>Thinking.</b> A local Qwen 27B streams the reply, preloaded so the first word arrives in about a second.</li>
+          <li><b>Two prompt layers.</b> A performer contract sets how to act; the character's own sheet sets who it is, including its limits.</li>
+          <li><b>Persona pyramid.</b> A 350-token core always in mind, eight summarised sections, and memories in its own words, recalled by what was just said.</li>
+        </ul>
+      </div>
+      <div class="sys">
+        <h3>Voice</h3>
+        <ul>
+          <li><b>Hearing.</b> faster-whisper transcribes 1.4 s of speech in 245 ms.</li>
+          <li><b>Two engines.</b> Chatterbox Turbo runs faster than real time, so there are no gaps between sentences. IndexTTS-2.5 can put anger or sadness in the voice.</li>
+          <li><b>Streaming.</b> Each sentence is voiced while the model is still writing the next.</li>
+          <li><b>Talking over it.</b> Interrupt and its voice ducks; it carries on if you gave a note, and stops if you started a conversation.</li>
+        </ul>
+      </div>
+      <div class="sys">
+        <h3>Face, lips and emotion</h3>
+        <ul>
+          <li><b>Lip sync.</b> Every word is aligned, looked up in a 126k-word pronouncing dictionary and mapped to 18 visemes, so the lips really close on p, b and m.</li>
+          <li><b>Life layer.</b> Blinks, micro-saccades, breathing and eyes that settle on the viewer, with the head following part of the way.</li>
+          <li><b>37 acting emotions.</b> Each one changes the face, the head pose and the voice together.</li>
+          <li><b>One performance.</b> A director's note outranks the character's mood, which outranks its baseline.</li>
+        </ul>
+      </div>
+      <div class="sys">
+        <h3>Direction</h3>
+        <ul>
+          <li><b>Spoken notes.</b> Mixed into normal talk, no mode button and no extra model call: expressions with intensity, gaze, posture, hold, relax.</li>
+          <li><b>No false triggers.</b> 45 command phrasings recognised, 0 of 25 ordinary sentences ("Stop the car", "I can't stand it") mistaken for one.</li>
+          <li><b>Retakes.</b> "Again" re-voices the last line with the new note. Every cue, line and take is logged.</li>
+        </ul>
+      </div>
+      <div class="sys">
+        <h3>The photoreal head</h3>
+        <ul>
+          <li><b>One photo, 20,018 Gaussians.</b> LAM builds a splat head from a single photo, rigged onto the animated FLAME face so it moves with every expression, the jaw and the eyes.</li>
+          <li><b>A custom splat renderer.</b> Sorted every frame in about half a millisecond, with teeth that show only through the lips.</li>
+          <li><b>Hair and ears.</b> A second pass on a bald edit of the same photo gives real ears and scalp, and spring weights let the hair swing.</li>
+          <li><b>Accessories.</b> Glasses or any 3D piece locked to the head.</li>
+        </ul>
+      </div>
+      <div class="sys">
+        <h3>Body and scenes</h3>
+        <ul>
+          <li><b>Bodies.</b> MakeHuman figures on a Mixamo skeleton, with 264 shape sliders, clothes and painted skin.</li>
+          <li><b>Two actors.</b> Each with its own head, body, life layer, voice and lip sync, looking at each other as they speak.</li>
+          <li><b>The director.</b> Direct either actor by name, add notes mid-scene, call cut, or join as a third character.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>By the numbers</h2>
+    <p class="intro">Measured during the build.</p>
+    <div class="numbers">
+      <div class="num"><div class="v">245 ms</div><div class="k">to hear you: speech recognition for 1.4 s of speech</div></div>
+      <div class="num"><div class="v">1.1 s</div><div class="k">to its first word, once the model is loaded</div></div>
+      <div class="num"><div class="v">1.5 to 1.8 s</div><div class="k">to its first spoken audio</div></div>
+      <div class="num"><div class="v">20,018</div><div class="k">Gaussians in a one-photo head; 31,271 after the bald merge</div></div>
+      <div class="num"><div class="v">37</div><div class="k">named emotions, each with a face, a head pose and a voice</div></div>
+      <div class="num"><div class="v">0 of 25</div><div class="k">ordinary sentences mistaken for direction</div></div>
+      <div class="num"><div class="v">4 of 4</div><div class="k">lip closures in "Peter picked a pepper"</div></div>
+      <div class="num"><div class="v">About 10 days</div><div class="k">from the first line of code to a two-actor, photoreal system</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Problems solved</h2>
+    <p class="intro">A few of the problems behind the numbers.</p>
+    <table class="problems">
+      <thead><tr><th>Problem</th><th>Cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td data-h="Problem">Speech recognition took 2.7 s for 1.5 s of speech</td><td data-h="Cause">A model download failed on Windows and was mislabelled as a CUDA error, so it ran on the CPU</td><td data-h="Fix">Download plain files instead: 245 ms on the GPU</td></tr>
+        <tr><td data-h="Problem">The lips never closed on p, b and m</td><td data-h="Cause">Loudness can't tell a closed mouth from a pause</td><td data-h="Fix">Align the words, look up their sounds, map them to 18 mouth shapes</td></tr>
+        <tr><td data-h="Problem">A 30 degree neck turn only reached 19.5</td><td data-h="Cause">The body file nested duplicate bone trees, and the skin followed the wrong copy</td><td data-h="Fix">Rebind every mesh to the root-most bones; the turns land exactly</td></tr>
+        <tr><td data-h="Problem">Hair looked like it was in front of a fan</td><td data-h="Cause">Strands touching the body kept most of their sliding speed</td><td data-h="Fix">Contact friction, bend limits and a speed cap: stray segments from 10.4 to 0.3</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>How it was made</h2>
+    <div class="two">
+      <div>
+        <p>I designed Method, chose every approach, supplied the photos, voices and motion clips, and tested every piece on my own PC and headset. When a result didn't meet my bar for realism, the approach changed: a fitted, painted face that read as a video game gave way to the Gaussian head, and loudness-based lip sync gave way to matching every sound.</p>
+        <p>The code was written with Claude, an AI from Anthropic, as my pair programmer. It wrote and tested the code in a cloud workspace with no GPU, so everything that needed the real models was proven on my machine.</p>
+      </div>
+      <ol class="method">
+        <li><b>A living checklist.</b> One phased build checklist, carried from session to session, holding every decision and measurement.</li>
+        <li><b>Whole files, versioned.</b> Every delivery was complete files with a version bumped in each one, checked first on screen before anything else was tested.</li>
+        <li><b>One task, one test.</b> Nothing counted as done until I had run its test steps.</li>
+        <li><b>Measured claims.</b> Millimetres of error and milliseconds per frame, not "it works".</li>
+        <li><b>Hard limits.</b> Windows only, everything local, no paid services. Those limits are why the face fitter and the hair system are custom.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>Timeline</h2>
+    <p class="intro">The core went from an empty folder to a photoreal, directable two-actor system in about ten days.</p>
+    <div class="cue"><div class="when">Sept 23</div><p>Project start: the scaffold and the VR view.</p></div>
+    <div class="cue"><div class="when">Sept 24</div><p>The voice loop: fast speech recognition, a cloned voice, phoneme lip sync.</p></div>
+    <div class="cue"><div class="when">Sept 26</div><p>A Windows-native face fitter, expression transfer, eyes, teeth and hair.</p></div>
+    <div class="cue"><div class="when">Sept 27</div><p>The Gaussian head adopted; body sliders, skins and clothes; one-photo character creation.</p></div>
+    <div class="cue"><div class="when">Sept 28</div><p>The persona pyramid with memory recall, and the 37-emotion acting set.</p></div>
+    <div class="cue"><div class="when">Sept 29</div><p>Two-actor scenes; phone and Quest browser access over Wi-Fi.</p></div>
+    <div class="cue"><div class="when">Oct 1</div><p>Moving hair, the bald merge for real ears and scalp, a voice per actor.</p></div>
+    <div class="cue"><div class="when">Oct 2</div><p>Glasses and other 3D pieces locked to the head.</p></div>
+    <div class="note"><b>Next:</b> recording performances out to ComfyUI and On-Set Studio as images, video, control passes and a Mixamo skeleton; gesture clips; and a standalone Quest mode.</div>
+  </section>
+
+  <section>
+    <div class="note"><b>About the demo.</b> Kratos was chosen as a test because he is instantly recognisable in face, voice and personality, which makes it easy to judge how close the result gets. Kratos is a character of Sony Interactive Entertainment. This is a personal fan test, not affiliated with or endorsed by Sony, and nothing from it is distributed.</div>
+    <div class="btn-row">
+      <a class="btn" href="/#nodes">Back to Projects</a>
+      <a class="btn ghost" href="/#contact">Get in touch</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dan Oravasaari</span>
+    <span><a href="https://github.com/IsItDanOrAi">GitHub</a> &middot; <a href="https://www.linkedin.com/in/danoravasaari/">LinkedIn</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var PAGE_VERSION = "method-page-v1";
+  try { console.log("%c" + PAGE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
+
+  // a missing trailer shows a labelled box naming the file it wanted
+  var v = document.querySelector(".screen video");
+  function missing() {
+    var box = v.parentElement;
+    if (box.querySelector(".missing")) return;
+    var m = document.createElement("div");
+    m.className = "missing";
+    m.textContent = "assets/video/method-trailer.mp4";
+    box.appendChild(m);
+  }
+  if (v) {
+    v.addEventListener("error", missing, true);
+    if (v.error) missing();          // it can fail before this script runs
+  }
+})();
+</script>
+</body>
+</html>
