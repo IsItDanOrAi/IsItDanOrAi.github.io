@@ -59,6 +59,10 @@
 
   assets/work/       flow01.jpg ... flow03.jpg     the Workflows cards, 16:9
                      node01.jpg                    the ExLoadout card, 16:9
+                     method01.jpg                  the Method card, 16:9
+
+  method.html        the Method project page, linked from its card. It uses
+                     assets/video/method-trailer.mp4 and method-poster.jpg.
 
   root               Dan_Oravasaari_Resume.pdf     linked from Work and Contact
                      favicon.png
@@ -525,6 +529,15 @@
   .thumb[aria-current="true"]::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
     box-shadow:inset 0 0 0 2px var(--pencil)}
 
+  /* group titles inside a section, set in the section-title serif at a smaller size */
+  .group{margin:2.4rem 0 1rem;font-family:"Source Serif 4",Georgia,serif;font-weight:400;
+    font-size:1.35rem;color:var(--stock-2);letter-spacing:-0.01em}
+  .group:first-of-type{margin-top:0}
+  .card .credit{margin-top:0.6rem;font-size:0.85rem;color:var(--graphite)}
+  /* a card that opens its own page: the title reads as text until hovered */
+  .card .card-link{color:inherit;text-decoration:none}
+  .card .card-link:hover{color:var(--pencil);text-decoration:underline}
+  a.plate{text-decoration:none}
   .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
   .card{background:var(--ink-2);border:1px solid var(--seam);display:flex;flex-direction:column}
   .card .plate{position:relative;overflow:hidden;aspect-ratio:16/9;background:#1b1e23;display:grid;place-items:center;color:#6b7078;
@@ -772,10 +785,13 @@
     <!-- ================= 04 CUSTOM NODES ================= -->
     <section class="panel" id="p-nodes" role="tabpanel" aria-labelledby="t-nodes">
       <div class="head">
-        <h2 class="vh">Custom Nodes</h2>
+        <h2 class="vh">Projects</h2>
         <div class="meta"><span>On-Set Studio 1.0.0</span><span>September 2026</span></div>
       </div>
 
+      <!-- PROJECTS has two groups: Tools (things people can install and use) and
+           Explorations (ideas built to see what was possible). Add a card to either. -->
+      <h3 class="group">Tools</h3>
       <div class="spot">
         <div>
           <!-- ASSET: screen recording, 30 to 45s: stage a scene, then the generated result -->
@@ -809,6 +825,20 @@
             <h3>ComfyUI-ExLoadout</h3>
             <p>Read and write Excel spreadsheet data inside ComfyUI workflows.</p>
             <div class="spec"><span>Python</span><span><a href="https://github.com/IsItDanOrAi">GitHub</a></span></div>
+          </div>
+        </article>
+      </div>
+
+      <h3 class="group">Explorations</h3>
+      <div class="cards">
+        <article class="card">
+          <!-- ASSET: assets/work/method01.jpg, 16:9, a frame of a Method character mid-line -->
+          <a class="plate" href="method.html" data-same-tab aria-label="Method: watch the trailer and see how it works"><img src="assets/work/method01.jpg" alt="" loading="lazy"></a>
+          <div class="body">
+            <h3><a class="card-link" href="method.html" data-same-tab>Method</a></h3>
+            <p>A real-time AI actor from one photo and one short voice clip. It answers in its own voice, shows emotion in its face and voice, takes spoken direction like an actor, and has a written personality and history behind every line. Runs in the browser and in VR on one home PC, with no paid services.</p>
+            <p class="credit">Designed, directed and tested by me. Code written with Claude, an AI from Anthropic, as pair programmer.</p>
+            <div class="spec"><span>three.js &middot; Python &middot; local AI models</span><span><a href="method.html" data-same-tab>Trailer and how it works</a></span></div>
           </div>
         </article>
       </div>
@@ -908,7 +938,7 @@
 
 <script>
 (function () {
-  var SITE_VERSION = "portfolio-v35 (boards read from assets/images, screenplay face)";
+  var SITE_VERSION = "portfolio-v37 (Method card opens method.html)";
   try { console.log("%c" + SITE_VERSION, "color:#4C93D6;font-weight:bold"); } catch (e) {}
 
   // ---------- the sections that live on the film ----------
@@ -923,7 +953,7 @@
       img:"assets/film/cell02.jpg", plate:"assets/plates/reel02.jpg" },
     { id:"p-workflows", no:"03", tag:"Workflows",    sub:"ComfyUI pipelines built for clients and for my own work.",
       img:"assets/film/cell03.jpg", plate:"assets/plates/reel03.jpg" },
-    { id:"p-nodes",     no:"04", tag:"Custom Nodes", sub:"Tools I built because the way I work needed them.",
+    { id:"p-nodes",     no:"04", tag:"Projects", sub:"Personal tools, and ideas I built to see what was possible.",
       img:"assets/film/cell04.jpg", plate:"assets/plates/reel04.jpg" },
     { id:"p-work",      no:"05", tag:"Work",         sub:"Where the work above was made, and who I am.",
       img:"assets/film/cell05.jpg", plate:"assets/plates/reel05.jpg" },
@@ -1904,6 +1934,7 @@
     (root || document).querySelectorAll("a[href]").forEach(function (a) {
       var href = a.getAttribute("href") || "";
       if (href.charAt(0) === "#" || href === "") return;      // in-page anchors stay put
+      if (a.hasAttribute("data-same-tab")) return;            // this site's own pages (method.html)
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
     });
